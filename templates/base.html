@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+    <title>PROJECT</title>
+</head>
+<body>
+
+PROJECT
+
+{% if "user_id" in session %}
+    <a href="/logout">Logout</a>
+{% else %}
+    <a href="/login">Login</a>
+{% endif %}
+
+<hr>
+
+{% for flash in get_flashed_messages() %}
+  {{ flash }}
+{% endfor %}
+
+{% block content %}
+    yay!!
+{% endblock %}
+
+</body>
+</html>
