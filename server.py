@@ -1,4 +1,4 @@
-"""Movie Ratings."""
+"""PROJECT."""
 
 from jinja2 import StrictUndefined
 
@@ -13,8 +13,6 @@ app = Flask(__name__)
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "ABC"
 
-# Normally, if you use an undefined variable in Jinja2, it fails silently.
-# This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
 
 
@@ -52,8 +50,6 @@ def login_info():
 
     flash("Logged in")
  #   return redirect("/users/%s" % user.user_id)
-
-
     return redirect('/')
 
 @app.route('/register', methods=['GET'])
