@@ -50,7 +50,7 @@ class List(db.Model):
                                      self.location_name,self.location_address, self.created_by)
 
 
-class Groups(db.Model):
+class Group(db.Model):
     """Tying users and lists"""
 
     __tablename__ = "groups"
