@@ -42,7 +42,7 @@ class List(db.Model):
     list_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
     list_type = db.Column(db.String(20))
-    due_date = db.Column(db.String(20), nullable=True)
+    due_date_list = db.Column(db.DateTime, nullable=True)
     list_location_name = db.Column(db.String(50), nullable=True)
     list_location_address = db.Column(db.String(100), nullable=True)
     created_by = db.Column(db.String(50), nullable = False)
@@ -54,7 +54,7 @@ class List(db.Model):
                 list location: {}, list Address: {}, Created by: {}".format(self.list_id,
                                                                             self.name, 
                                                                             self.list_type, 
-                                                                            self.due_date,
+                                                                            self.due_date_list,
                                                                             self.location_name,
                                                                             self.location_address, 
                                                                             self.created_by)
@@ -96,7 +96,7 @@ class To_Do(db.Model):
     to_do_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     list_id = db.Column(db.Integer, db.ForeignKey('lists.list_id'))
     item = db.Column(db.String(64), nullable=True)
-    due_date = db.Column(db.String(20), nullable=True)
+    due_date_todo = db.Column(db.DateTime, nullable=True)
     status_notdone = db.Column(db.Boolean, nullable=False, default=True)
     todo_location_name = db.Column(db.String(100), nullable=True)
     todo_location_address = db.Column(db.String(100), nullable=True)
@@ -111,7 +111,7 @@ class To_Do(db.Model):
                 Status(ongoing?): {}".format(self.list_items_id,
                                             self.list_id, 
                                             self.item, 
-                                            self.due_date,
+                                            self.due_date_todo,
                                             self.status_notdone,
                                             self.todo_location_name,
                                             self.todo_location_address)
@@ -126,7 +126,7 @@ class Shopping(db.Model):
     shopping_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     list_id = db.Column(db.Integer, db.ForeignKey('lists.list_id'))
     item = db.Column(db.String(64), nullable=True)
-    due_date = db.Column(db.String(20), nullable=True)
+    due_date_shopping = db.Column(db.DateTime, nullable=True)
     status_notdone = db.Column(db.Boolean, nullable=False, default=True)
 
     #Define relationship to lists
@@ -139,7 +139,7 @@ class Shopping(db.Model):
                 Due Date: {}, Status(ongoing?): {}".format(self.list_items_id,
                                                             self.list_id, 
                                                             self.item, 
-                                                            self.due_date, 
+                                                            self.due_date_shopping, 
                                                             self.status_notdone)
 
 

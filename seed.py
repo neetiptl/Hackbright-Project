@@ -31,11 +31,19 @@ def load_lists():
     print "Lists"
     for i, row in enumerate(open("data/lists")):
         row = row.rstrip()
-        name, list_type, due_date, list_location_name, list_location_address, created_by= row.split("|")
+        name, list_type, due_date_list, list_location_name, list_location_address, created_by= row.split("|")
+
+        # The date is in the file as month-day-year
+        # convert it to a datetime object.
+
+        if due_date_list:
+            due_date_list = datetime.datetime.strptime(due_date_list, "%m-%d-%y")
+        else:
+            due_date_list = None
 
         listt = List(name=name,
                     list_type=list_type,
-                    due_date=due_date,
+                    due_date_list=due_date_list,
                     list_location_name=list_location_name,
                     list_location_address=list_location_address,
                     created_by=created_by
@@ -70,11 +78,19 @@ def load_todo():
     print "To_Do"
     for i, row in enumerate(open("data/todo")):
         row = row.rstrip()
-        list_id, item, due_date, status_notdone, todo_location_name, todo_location_address= row.split("|")
+        list_id, item, due_date_todo, status_notdone, todo_location_name, todo_location_address= row.split("|")
+
+        # The date is in the file as month-day-year
+        # convert it to a datetime object.
+
+        if due_date_todo:
+            due_date_todo = datetime.datetime.strptime(due_date_todo, "%m-%d-%y")
+        else:
+            due_date_todo = None
 
         todo = To_Do(list_id=list_id,
                     item=item,
-                    due_date=due_date,
+                    due_date_todo=due_date_todo,
                     status_notdone=status_notdone,
                     todo_location_name=todo_location_name,
                     todo_location_address=todo_location_address
@@ -91,11 +107,19 @@ def load_shopping():
     print "Shopping"
     for i, row in enumerate(open("data/shopping")):
         row = row.rstrip()
-        list_id, item, due_date, status_notdone= row.split("|")
+        list_id, item, due_date_shopping, status_notdone= row.split("|")
+
+        # The date is in the file as month-day-year
+        # convert it to a datetime object.
+
+        if due_date_shopping:
+            due_date_shopping = datetime.datetime.strptime(due_date_shopping, "%m-%d-%y")
+        else:
+            due_date_shopping = None
 
         shoppings = Shopping(list_id=list_id,
                         item=item,
-                        due_date=due_date,
+                        due_date_shopping=due_date_shopping,
                         status_notdone=status_notdone,
                     )
 

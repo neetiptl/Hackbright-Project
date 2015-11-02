@@ -2,10 +2,10 @@
 
 from jinja2 import StrictUndefined
 
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, session, flash
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db
+from model import connect_to_db, db, User, List, Group, To_Do, Shopping
 
 
 app = Flask(__name__)
@@ -56,14 +56,39 @@ def login_info():
 def register():
     """register"""
 
-    return render_template("register.html")
+    return render_template("registration_form.html")
 
-@app.route('/register', methods=['GET'])
+@app.route('/register', methods=['POST'])
 def register_info():
-    """register"""
+    """Process registration"""
 
-    return render_template("register.html")
+    # Get form variables
+    name = request.form["name"]
+    email = request.form["email"]
+    password = request.form["password"]
+    mobile = request.form["mobile"]
+    user_location_name = request.form["location"]
+    user_location_address = request.form["address"]
 
+    new_user = User(name=name, email=email,
+                    password=password,
+                    mobile=mobile,
+                    user_location_name=user_location_name,
+                    user_location_address=user_location_address)
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    flash("User {} added.".format(name))
+    return redirect("/")
+
+@app.route('/logout')
+def logout():
+    """Log out."""
+
+    del session["user_id"]
+    flash("Logged Out.")
+    return redirect("/")
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
