@@ -55,8 +55,8 @@ class List(db.Model):
                                                                             self.name, 
                                                                             self.list_type, 
                                                                             self.due_date_list,
-                                                                            self.location_name,
-                                                                            self.location_address, 
+                                                                            self.list_location_name,
+                                                                            self.list_location_address, 
                                                                             self.created_by)
 
 

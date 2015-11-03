@@ -50,7 +50,7 @@ def login_info():
 
     flash("Logged in")
  #   return redirect("/users/%s" % user.user_id)
-    return redirect('/')
+    return redirect("/existing_lists")
 
 @app.route('/register', methods=['GET'])
 def register():
@@ -89,6 +89,24 @@ def logout():
     del session["user_id"]
     flash("Logged Out.")
     return redirect("/")
+
+@app.route('/existing_lists')
+def existing_lists():
+    """show user's lists"""
+
+    user_id = session["user_id"]
+    user_lists = Group.query.filter_by(user_id=user_id).all()
+
+    return render_template("existing_lists.html", user_lists=user_lists)
+
+@app.route('/lists/<int:list_id>')
+def lists(list_id):
+
+    list_items = List.query.filter_by(list_id=list_id).all()
+    print list_items
+
+    return redirect('/')
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
