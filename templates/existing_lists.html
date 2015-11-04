@@ -2,8 +2,8 @@
 {% block content %}
     <div id="existing_lists">
         <h1 id="existing-lists-title">Existing Lists:</h1>
-        {% for group in user_lists %}
-            <a href="/lists/{{ group.list_id }}">
+        {% for group in user_list_groups %}
+            <a href="/lists/{{ group.checklist.list_id }}">
             {{ group.checklist.name }}
             </a><br>
         {% endfor %}

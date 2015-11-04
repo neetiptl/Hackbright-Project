@@ -18,7 +18,7 @@ class User(db.Model):
     email = db.Column(db.String(64), nullable=False)
     password = db.Column(db.String(64), nullable=False)
     mobile = db.Column(db.Integer, nullable=False)
-    user_location_name = db.Column(db.Integer, nullable = True)
+    user_location_name = db.Column(db.String, nullable = True)
     user_location_address = db.Column(db.String(100), nullable = True)
 
     def __repr__(self):
@@ -59,6 +59,9 @@ class List(db.Model):
                                                                             self.list_location_address, 
                                                                             self.created_by)
 
+    # #Define relationship to lists
+    # list_shopping = db.relationship("Shopping",
+    #                             backref=db.backref("lists"))
 
 class Group(db.Model):
     """Tying users and lists"""
@@ -83,7 +86,8 @@ class Group(db.Model):
 
         return "Group ID: {}, User ID: {}, List ID: {}".format(self.group_id,
                                                                 self.user_id, 
-                                                                self.list_id)
+                                                                self.list_id,
+                                                                self.permission)
 
 
 
@@ -95,20 +99,20 @@ class To_Do(db.Model):
 
     to_do_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     list_id = db.Column(db.Integer, db.ForeignKey('lists.list_id'))
-    item = db.Column(db.String(64), nullable=True)
+    item = db.Column(db.String(64), nullable=False)
     due_date_todo = db.Column(db.DateTime, nullable=True)
     status_notdone = db.Column(db.Boolean, nullable=False, default=True)
     todo_location_name = db.Column(db.String(100), nullable=True)
     todo_location_address = db.Column(db.String(100), nullable=True)
 
     #Define relationship to lists
-    lists = db.relationship("List",
+    list_todo = db.relationship("List",
                                 backref=db.backref("to_dos"))
     def __repr__(self):
         """Provide helpful representation when printed."""
 
         return "List_Items ID:{}, List ID: {}, Item: {}, Due Date: {}, \
-                Status(ongoing?): {}".format(self.list_items_id,
+                Status(ongoing?): {}".format(self.to_do_id,
                                             self.list_id, 
                                             self.item, 
                                             self.due_date_todo,
@@ -130,13 +134,14 @@ class Shopping(db.Model):
     status_notdone = db.Column(db.Boolean, nullable=False, default=True)
 
     #Define relationship to lists
-    lists = db.relationship("List",
+    list_shopping = db.relationship("List",
                                 backref=db.backref("shoppings"))
+    
     def __repr__(self):
         """Provide helpful representation when printed."""
 
         return "List_Items ID:{}, List ID: {}, Item: {}, \
-                Due Date: {}, Status(ongoing?): {}".format(self.list_items_id,
+                Due Date: {}, Status(ongoing?): {}".format(self.shopping_id,
                                                             self.list_id, 
                                                             self.item, 
                                                             self.due_date_shopping, 

@@ -95,17 +95,23 @@ def existing_lists():
     """show user's lists"""
 
     user_id = session["user_id"]
-    user_lists = Group.query.filter_by(user_id=user_id).all()
+    user_list_groups = Group.query.filter_by(user_id=user_id).all()
 
-    return render_template("existing_lists.html", user_lists=user_lists)
+    return render_template("existing_lists.html", user_list_groups=user_list_groups)
 
 @app.route('/lists/<int:list_id>')
 def lists(list_id):
 
-    list_items = List.query.filter_by(list_id=list_id).all()
-    print list_items
+    this_list = List.query.filter_by(list_id=list_id).one()
+    print "\n\n\n\n\n\n"
+    print this_list
 
-    return redirect('/')
+    # if this_list.list_type == 'shopping':
+    #     list_item_shopping = Shopping.query.filter_by(list_id=list_id).all()
+    # elif this_list.list_type == 'todo':
+    #     list_items_todo = To_Do.query.filter_by(list_id=list_id).all()
+
+    return render_template("list_items.html", this_list=this_list)
 
 
 if __name__ == "__main__":
