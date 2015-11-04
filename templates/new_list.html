@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div id="list-items">
+        <h1>New List:</h1>
+    </div>
+
+    <form  id="new-list" action="/new_list" method="POST">
+        <select>
+            <option value="to-do">To Do</option>
+            <option value="shopping">Shopping</option>
+        </select><br><br>
+
+<!-- if shopping ->do this
+    if to-do ->do that -->
+
+        Title:
+        <input type="text" name="title" placeholder="Name of new list" style="width:300px"><br><br>
+
+        <div id = "list-container">
+            <div class="list-field">
+                Task:
+                <input type="text" class="list-row" name="list_row" placeholder="Enter Task" style="width: 90px;">
+            </div>
+        </div>
+
+        <br>
+        <button type="button" id="add-new">Add another row</button> 
+
+        <input type="submit" id="formSubmitId" value="Save list"></input>
+
+    </form>
+
+<script src="https://code.jquery.com/jquery.js"></script>
+<script>
+    $("#add-new").on('click', function() {
+        var new_list_row = $(".list-field").get(0);
+        var new_field= $(new_list_row).clone();
+        new_field.appendTo("#list-container");
+        index = $("#list-container").children().length
+    });
+</script>
+
+{% endblock %}

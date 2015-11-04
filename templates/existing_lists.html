@@ -4,11 +4,15 @@
         <h1 id="existing-lists-title">Existing Lists:</h1>
         {% for group in user_list_groups %}
             <a href="/lists/{{ group.checklist.list_id }}">
-            {{ group.checklist.name }}
-            </a><br>
+            {{ group.checklist.name }} 
+            </a> Due on: {{ group.checklist.due_date_list}} Created by: {{ group.checklist.created_by }}<br>
         {% endfor %}
-
-
     </div>
+
+    <form action="new_list" method="POST">
+        <div class="new_lists">
+            <input type="submit" value="Create New List">
+        </div>
+    </form>
 
 {% endblock %}

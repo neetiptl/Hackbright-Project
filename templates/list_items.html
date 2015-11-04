@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
     <div id="list-items">
-        <h1 id="list-items-title">List Items:</h1>
+        <h1 id="list-items-title">{{this_list.name}}</h1>
         {% if this_list.list_type=='shopping' %}
                 shopping <br>
             {% for item in this_list.shoppings %}
-                Item: {{ item.item }}, Complete?: {{ item.status_notdone }},
+                Item: {{ item.item }}, Incomplete?: {{ item.status_notdone }},
                     {% if item.due_date_shopping %}
                         Due Date: {{ item.due_date_shopping }}
                     {% endif %}
@@ -16,7 +16,7 @@
         {% if this_list.list_type=='todo' %}
                 todo <br>
             {% for item in this_list.to_dos %}
-                Item: {{ item.item }}, Complete?: {{ item.status_notdone }},
+                Item: {{ item.item }}, Incomplete?: {{ item.status_notdone }},
                     {% if item.due_date_todo %}
                         Due Date: {{ item.due_date_todo }}
                     {% endif %}

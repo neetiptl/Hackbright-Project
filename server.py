@@ -101,17 +101,20 @@ def existing_lists():
 
 @app.route('/lists/<int:list_id>')
 def lists(list_id):
+    """get items in user's list"""
 
     this_list = List.query.filter_by(list_id=list_id).one()
     print "\n\n\n\n\n\n"
     print this_list
 
-    # if this_list.list_type == 'shopping':
-    #     list_item_shopping = Shopping.query.filter_by(list_id=list_id).all()
-    # elif this_list.list_type == 'todo':
-    #     list_items_todo = To_Do.query.filter_by(list_id=list_id).all()
-
     return render_template("list_items.html", this_list=this_list)
+
+@app.route('/new_list', methods=["POST"])
+def new_list():
+
+
+
+    return render_template("new_list.html")
 
 
 if __name__ == "__main__":

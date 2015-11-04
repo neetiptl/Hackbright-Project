@@ -58,11 +58,6 @@ class List(db.Model):
                                                                             self.list_location_name,
                                                                             self.list_location_address, 
                                                                             self.created_by)
-
-    # #Define relationship to lists
-    # list_shopping = db.relationship("Shopping",
-    #                             backref=db.backref("lists"))
-
 class Group(db.Model):
     """Tying users and lists"""
 
@@ -136,7 +131,7 @@ class Shopping(db.Model):
     #Define relationship to lists
     list_shopping = db.relationship("List",
                                 backref=db.backref("shoppings"))
-    
+
     def __repr__(self):
         """Provide helpful representation when printed."""
 
