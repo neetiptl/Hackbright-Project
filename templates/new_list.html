@@ -1,36 +1,73 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div id="list-items">
-        <h1>New List:</h1>
-    </div>
+    <div id="list-items"><h1>New List:</h1></div>
 
-    <form  id="new-list" action="/new_list" method="POST">
-        <select>
+    <select id="select-list-type">
             <option value="to-do">To Do</option>
             <option value="shopping">Shopping</option>
-        </select><br><br>
+    </select><br><br>
 
-<!-- if shopping ->do this
-    if to-do ->do that -->
 
-        Title:
-        <input type="text" name="title" placeholder="Name of new list" style="width:300px"><br><br>
+  <div id="new-list-form">
+
+    <form id="new-shopping-list" style="display:none;" action="/new_list" method="POST">
+        Shopping List
+<!-- Part of form for lists table
+ -->
+        Name:
+        <input type="text" name="name" placeholder="Name of new shopping" style="width:300px"><br><br>
+        Due Date:
+        <input type="text" name="due-date-list" class="datepicker" placeholder="Due Date" style="width:200px"><br><br>
+        List Location:
+        <input type="text" name="list_location_name" placeholder="Where does this list occur?" style="width:150px">
+        <input type="text" name="list_location_address" placeholder="What is the address?" style="width:300px"><br><br>     
+<!-- Part of form for shoppings table
+ -->
+        <div id = "list-container">
+            <div class="list-field">
+                Task:
+                <input type="text" class="list-row-item" name="list_item" placeholder="Enter Item" style="width: 200px;">
+                <input type="text" name="list_item_due_date" class="datepicker" class="list-row-due-date" placeholder="If item has separate due date, enter here" style="width: 200px;"><br>
+            </div>
+        </div><br>
+        <button type="button" id="add-new">Add another row</button>
+        <input type="submit" name="shopping-list">
+    </form>
+
+
+
+    <form id="new-todo-list" style="display;" action="/new_list" method="POST">
+        To-Do List
+        Name:
+        <input type="text" name="name" placeholder="Name of new to-do list" style="width:300px"><br><br>
 
         <div id = "list-container">
             <div class="list-field">
                 Task:
-                <input type="text" class="list-row" name="list_row" placeholder="Enter Task" style="width: 90px;">
+                <input type="text" class="list-row" name="list_row" placeholder="Enter Task" style="width: 100px;">
             </div>
-        </div>
-
-        <br>
-        <button type="button" id="add-new">Add another row</button> 
-
-        <input type="submit" id="formSubmitId" value="Save list"></input>
-
+        </div><br>
+        <button type="button" id="add-new">Add another row</button>
+        <input type="submit" name="todo" id="formSubmitId" value="Save list"></input>
     </form>
 
+  </div>
+
+
+
 <script src="https://code.jquery.com/jquery.js"></script>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script>
+  $(function() {
+    $( ".datepicker" ).datepicker();
+  });
+
+</script>
+
 <script>
     $("#add-new").on('click', function() {
         var new_list_row = $(".list-field").get(0);
@@ -39,5 +76,14 @@
         index = $("#list-container").children().length
     });
 </script>
+<script>
+// FIXME: This only allows for changing from default to-do to shopping; what if user decides to change back to to-do?
+    console.log(document.getElementById("select-list-type").value);
+    document.getElementById("select-list-type").addEventListener("change", function(){
+        alert(this.value);
+        document.getElementById("new-todo-list").style.display = "none";
+        document.getElementById("new-shopping-list").style.display = "block"
+    });
+ </script>   
 
 {% endblock %}

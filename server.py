@@ -104,17 +104,33 @@ def lists(list_id):
     """get items in user's list"""
 
     this_list = List.query.filter_by(list_id=list_id).one()
-    print "\n\n\n\n\n\n"
-    print this_list
 
     return render_template("list_items.html", this_list=this_list)
 
-@app.route('/new_list', methods=["POST"])
-def new_list():
 
-
+@app.route('/new_list', methods=["GET"])
+def render_new_list():
 
     return render_template("new_list.html")
+
+@app.route('/new_list', methods=["POST"])
+def new_list():
+    if "todo" in request.form:
+        print "todo"
+        list_type="todo"
+        new_list_details = To_Do()
+    if "shopping-list" in request.form:
+        print "shopping-list"
+        list_type="shopping"
+
+        new_list_details = Shopping()
+
+#FIXME: list created_by = session["user_id"]
+    new_list = List(list_type=list_type,)
+
+
+
+    return redirect('existing_lists')
 
 
 if __name__ == "__main__":
