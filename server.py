@@ -13,7 +13,7 @@ app.secret_key = "ABC"
 
 app.jinja_env.undefined = StrictUndefined
 
-
+################ Login, Logout, and Registration routes #################
 @app.route('/')
 def index():
     """Homepage."""
@@ -87,7 +87,7 @@ def logout():
     del session["user_id"]
     flash("Logged Out.")
     return redirect("/")
-
+################ Display existing lists route ##############
 @app.route('/existing_lists')
 def existing_lists():
     """show user's lists"""
@@ -105,7 +105,7 @@ def lists(list_id):
 
     return render_template("list_items.html", this_list=this_list)
 
-###########################################################
+############### Create new lists routes  ###################
 @app.route('/new_list_base', methods=["GET"])
 def new_list_base():
 
@@ -157,11 +157,11 @@ def new_todo():
     list_id = session["list_id"]
     print "\n\n\n\n List ID:", list_id
     item_list = request.form.getlist('item')
-    due_date_todo_list = request.form.getlist('due-date-todo')
+    due_date_todo_list = request.form.getlist('due_date_todo')
     status_notdone_list = request.form.getlist('status_notdone')
     todo_location_name_list = request.form.getlist('todo_location_name')
+    todo_location_address = request.form.getlist('todo_location_address')
     todo_location_address_list = request.form.getlist('todo_location_address')
-    due_date_todo_list = request.form.getlist('due_date_todo')
 
     for i in range(len(item_list)):
         item = item_list[i]
@@ -222,7 +222,25 @@ def new_shopping():
 
     return "new shopping form"
 
+################## Edit existing lists routes ################
 
+# @app.route('/edit_existing_lists', methods=['GET'])
+# def display_editable_list():
+
+#     return redirect('/')
+
+
+# @app.route('edit_existing_lists', methods=['POST'])
+# def commit_edited_list():
+
+#     return redirect('/')
+
+
+
+
+
+
+################# Old Code ######################
 # @app.route('/new_list_base', methods=["POST"])
 # def new_list_base_to_database():
 #     """Collect base form info"""
@@ -277,13 +295,7 @@ def new_shopping():
 
 
 
-
-
-
-
-
-
-##########################################################
+################ Debug Toolbar #########################
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension
