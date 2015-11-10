@@ -169,9 +169,9 @@ def new_todo():
         due_date_todo = due_date_todo_list[i]
         print "due_date_todo: ", due_date_todo
         if status_notdone_list[i]=='on':
-            status_notdone = True
-        else:
             status_notdone = False
+        else:
+            status_notdone = True
         print "status_notdone: ", status_notdone
         todo_location_name = todo_location_name_list[i]
         print "todolocation name: ", todo_location_name

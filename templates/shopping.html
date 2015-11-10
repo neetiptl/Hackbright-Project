@@ -11,7 +11,7 @@
                 Task:
                 <input type="text" class="list_row" name="item" placeholder="Enter Task" style="width: 100px;">
                Status(check if task is done):
-               <input type="checkbox" class="list_row" name="status_notdone"><br>
+               <input type="checkbox" class="list_row" id="checkbox1" name="status_notdone"><br>
             </div>
         </div><br>
         <button type="button" id="add-new">Add another task</button><br><br>
@@ -28,6 +28,7 @@
     $("#add-new").on('click', add_more_rows);
     function add_more_rows() {
         $('.list-field:last').clone().find("input:text").val("").end().appendTo("#list-wrapper:last");
+        // $('#checkbox1 :checked').removeAttr('checked');
         }; 
     // $("#add-new").on('click', function() {
     //     var new_list = $(".list-field").get(0);
