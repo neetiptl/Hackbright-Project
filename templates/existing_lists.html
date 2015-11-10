@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+
     <div id="existing_lists">
         <h1 id="existing-lists-title">Existing Lists:</h1>
         {% for group in user_list_groups %}
@@ -9,10 +10,10 @@
         {% endfor %}
     </div>
 
-    <form action="new_list" method="GET">
-        <div class="new_lists">
-            <input type="submit" value="Create New List">
-        </div>
+    <form action="/new_list_base" method="GET">
+        <input type="submit" value="Create New List">
     </form>
+
+
 
 {% endblock %}

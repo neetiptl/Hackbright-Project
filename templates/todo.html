@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div id="new-list-todo" style="display"> 
+    <h3>{{ name }}</h3>
+    <form id="new-todo-list" style="none;" action="/new_todo" method="POST">
+        To-Do List
+        <div id = "list-container">
+            <div class="list-field">
+                Task:
+                <input type="text" class="list_row" name="item" placeholder="Enter Task" style="width: 100px;">
+                Due date?*
+               <input type="text" name="due-date-todo" class="datepicker" placeholder="Due Date" style="width:200px">
+               Status(check if task is done):
+               <input type="checkbox" class="list_row" name="status_notdone"><br>
+               Location?*
+                <input type="text" name="todo_location_name" placeholder="Where does this task occur?" style="width:150px">
+                <input type="text" name="todo_location_address" placeholder="Street address, city, state, zip" style="width:300px"><br><br>
+             </div>
+        </div><br>
+        <button type="button" id="add-new">Add another task</button><br><br>
+
+        <input type="submit" name="todo" id="formSubmitId" value="Save list"></input><br>
+        * optional fields
+
+    </form>
+</div>
+
+<script>
+    $("#add-new").on('click', add_more_rows);
+    function add_more_rows() {
+        var new_list_row = $(".list-field").get(0);
+        var new_field= $(new_list_row).clone();
+        new_field.appendTo("#list-container");
+        index = $("#list-container").children().length
+    };
+       
+</script>
+
+{% endblock %}

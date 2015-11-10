@@ -24,14 +24,14 @@ class User(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return "User ID: {}, Name: {}, email:{}, password: {}, mobile#, \
-                User location: {}, User Address: {}: {}".format(self.user_id,
+        return "User ID: {}, Name: {}, email:{}, password: {}, mobile#: {}, \
+                User location: {}, User Address: {}".format(self.user_id,
                                                                 self.name, 
                                                                 self.email, 
                                                                 self.password, 
                                                                 self.mobile,
-                                                                self.location_name, 
-                                                                self.location_address)
+                                                                self.user_location_name, 
+                                                                self.user_location_address)
 
 
 class List(db.Model):

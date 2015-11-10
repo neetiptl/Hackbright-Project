@@ -2,25 +2,16 @@
 {% block content %}
     <div id="list-items"><h1>New List:</h1></div>
 
-    <select id="select-list-type">
-            <option value="to-do">To Do</option>
-            <option value="shopping">Shopping</option>
-    </select><br><br>
 
 
-  <div id="new-list-form">
+
+<div id="new-list-form">
 
     <form id="new-shopping-list" style="display:none;" action="/new_list" method="POST">
         Shopping List
 <!-- Part of form for lists table
  -->
-        Name:
-        <input type="text" name="name" placeholder="Name of new shopping" style="width:300px"><br><br>
-        Due Date:
-        <input type="text" name="due-date-list" class="datepicker" placeholder="Due Date" style="width:200px"><br><br>
-        List Location:
-        <input type="text" name="list_location_name" placeholder="Where does this list occur?" style="width:150px">
-        <input type="text" name="list_location_address" placeholder="What is the address?" style="width:300px"><br><br>     
+  
 <!-- Part of form for shoppings table
  -->
         <div id = "list-container">
@@ -55,31 +46,22 @@
 
 
 
-<script src="https://code.jquery.com/jquery.js"></script>
-  <meta charset="utf-8">
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-  <link rel="stylesheet" href="/resources/demos/style.css">
-  <script>
-  $(function() {
-    $( ".datepicker" ).datepicker();
-  });
 
-</script>
 
 <script>
-    $("#add-new").on('click', function() {
+    $("#add-new").on('click', add_more_rows);
+
+    function add_more_rows() {
         var new_list_row = $(".list-field").get(0);
         var new_field= $(new_list_row).clone();
         new_field.appendTo("#list-container");
         index = $("#list-container").children().length
-    });
+                            };
 </script>
 <script>
 // FIXME: This only allows for changing from default to-do to shopping; what if user decides to change back to to-do?
     console.log(document.getElementById("select-list-type").value);
-    document.getElementById("select-list-type").addEventListener("change", function(){
+    document.getElementById("select-list-type").addEventListener("change", function(evt){
         alert(this.value);
         document.getElementById("new-todo-list").style.display = "none";
         document.getElementById("new-shopping-list").style.display = "block"

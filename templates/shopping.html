@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div id="new-list-shopping" style="display"> 
+    <h3>{{ name }}</h3>
+
+    <form id="new-shopping-list" style="none;" action="/new_shopping" method="POST">
+        Shopping List
+        <div id = "list-wrapper">
+            <div class="list-field">
+                Task:
+                <input type="text" class="list_row" name="item" placeholder="Enter Task" style="width: 100px;">
+               Status(check if task is done):
+               <input type="checkbox" class="list_row" name="status_notdone"><br>
+            </div>
+        </div><br>
+        <button type="button" id="add-new">Add another task</button><br><br>
+
+        <input type="submit" name="shopping" id="formSubmitId" value="Save list"></input><br>
+        * optional fields
+
+    </form>
+</div>
+
+
+
+<script>
+    $("#add-new").on('click', add_more_rows);
+    function add_more_rows() {
+        $('.list-field:last').clone().find("input:text").val("").end().appendTo("#list-wrapper:last");
+        }; 
+    // $("#add-new").on('click', function() {
+    //     var new_list = $(".list-field").get(0);
+    //     var new_field= $(new_ingredient).clone();
+    //     new_field.appendTo("#list-wrapper");
+    //     index = $("#list_wrapper").children().length;
+    //     $('.item', new_field).attr('name', 'item');
+    // });
+
+
+</script>
+
+{% endblock %}
