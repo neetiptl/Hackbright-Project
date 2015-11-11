@@ -112,7 +112,7 @@ def new_list_base():
     return render_template("new_list_base.html")
 
 
-@app.route('/base_form', methods=['POST'])
+@app.route('/new_list_base', methods=['POST'])
 def base_form():
 
     #Get form data and add to database
@@ -125,7 +125,7 @@ def base_form():
     due_date_list = datetime.datetime.strptime(due_date_list, "%m/%d/%Y")
     created_by_name_obj = User.query.filter_by(user_id=created_by).one()
     created_by_name = created_by_name_obj.name
-    print "THIS SHOULD BE AN OBJECT", created_by_name_obj
+#FIXME - change created_by to int, then commit created_by=created_by
     list_ = List(name=name,
                 list_type=list_type, 
                 due_date_list=due_date_list, 
@@ -148,17 +148,6 @@ def base_form():
 @app.route('/new_todo/<int:list_id>', methods=['POST'])
 def new_todo(list_id):
     """collect new todo list form"""
-    # print request.form.get("data");
-    # return "success"
-
-    # list_id_obj = Group.query.filter_by(user_id=session["user_id"], list_id=session["list_id"]).one()
-    print "\n\n\n\n List ID:", list_id
-    # item_list = request.form.getlist('item')
-    # due_date_todo_list = request.form.getlist('due_date_todo')
-    # status_notdone_list = request.form.getlist('status_notdone')
-    # todo_location_name_list = request.form.getlist('todo_location_name')
-    # todo_location_address = request.form.getlist('todo_location_address')
-    # todo_location_address_list = request.form.getlist('todo_location_address')
 
     item_list = request.form.get('item')
     due_date_todo_list = request.form.get('due_date_todo')
@@ -166,6 +155,104 @@ def new_todo(list_id):
     todo_location_name_list = request.form.get('todo_location_name')
     todo_location_address = request.form.get('todo_location_address')
     todo_location_address_list = request.form.get('todo_location_address')
+
+    item = item_list
+    due_date_todo = due_date_todo_list
+    if status_notdone_list=='on':
+        status_notdone = False
+    else:
+        status_notdone = True
+    todo_location_name = todo_location_name_list
+    todo_location_address = todo_location_address_list
+    due_date_todo = datetime.datetime.strptime(due_date_todo, "%m/%d/%Y")
+
+    new_todo = To_Do(list_id=list_id,
+                    item=item,
+                    due_date_todo=due_date_todo,
+                    status_notdone=status_notdone,
+                    todo_location_name=todo_location_name,
+                    todo_location_address=todo_location_address)
+
+    db.session.add(new_todo)
+    db.session.commit()
+    # print "\n\n\n\n New ToDo:"
+    print new_todo
+    todo_dict = {
+        "to_do_id" : new_todo.to_do_id,
+        "list_id" : new_todo.list_id,
+        "item" : new_todo.item,
+        "due_date_todo" : new_todo.due_date_todo,
+        "status_notdone" : new_todo.status_notdone,
+        "todo_location_name" : new_todo.todo_location_name,
+        "todo_location_address" : new_todo.todo_location_address
+    }
+    return jsonify(todo_dict)
+
+@app.route("/new_shopping/<int:list_id>", methods=["POST"])
+def new_shopping(list_id):
+    "get shopping form data and commit it"
+
+    item_list = request.form.get('item')
+    status_notdone_list = request.form.get('status_notdone')
+
+    item = item_list
+    if status_notdone_list=='on':
+        status_notdone = False
+    else:
+        status_notdone = True
+
+    new_shopping = Shopping(list_id=list_id,
+                    item=item,
+                    status_notdone=status_notdone)
+
+    db.session.add(new_shopping)
+    db.session.commit()
+    print "\n\n\n\n New Shopping:"
+    print new_shopping
+    shopping_dict = {
+        "list_id" : new_shopping.list_id,
+        "item" : new_shopping.item,
+        "status_notdone" : new_shopping.status_notdone
+    }
+
+    return jsonify(shopping_dict)
+    
+#    return redirect(url_for('lists', list_id=list_id))
+
+   # print "\n\n\n\n List ID:", list_id
+
+    # item_list = request.form.getlist('item')
+    # status_notdone_list = request.form.getlist('status_notdone')
+
+    # for i in range(len(item_list)):
+    #     item = item_list[i]
+    #     if status_notdone_list[i]=='on':
+    #         status_notdone = False
+    #     else:
+    #         status_notdone = True
+    #     print "status_notdone: ", status_notdone
+
+    #     new_shopping = To_Do(list_id=list_id,
+    #                     item=item,
+    #                     status_notdone=status_notdone)
+
+    #     db.session.add(new_shopping)
+    #     db.session.commit()
+    #     print "\n\n\n\n New Shopping:"
+    #     print new_shopping
+
+    # return "new shopping form"
+
+        # print request.form.get("data");
+    # return "success"
+
+    # list_id_obj = Group.query.filter_by(user_id=session["user_id"], list_id=session["list_id"]).one()
+    # item_list = request.form.getlist('item')
+    # due_date_todo_list = request.form.getlist('due_date_todo')
+    # status_notdone_list = request.form.getlist('status_notdone')
+    # todo_location_name_list = request.form.getlist('todo_location_name')
+    # todo_location_address = request.form.getlist('todo_location_address')
+    # todo_location_address_list = request.form.getlist('todo_location_address')
 
     # for i in range(len(item_list)):
     #     item = item_list[i]
@@ -196,93 +283,8 @@ def new_todo(list_id):
     #     print "\n\n\n\n New ToDo:"
     #     print new_todo
 
-    item = item_list
-    print "item: ", item
-    due_date_todo = due_date_todo_list
-    print "due_date_todo: ", due_date_todo
-    if status_notdone_list=='on':
-        status_notdone = False
-    else:
-        status_notdone = True
-    print "status_notdone: ", status_notdone
-    todo_location_name = todo_location_name_list
-    print "todolocation name: ", todo_location_name
-    todo_location_address = todo_location_address_list
-    print "todo location address: ", todo_location_address
-    due_date_todo = datetime.datetime.strptime(due_date_todo_list, "%m/%d/%Y")
-    print "DUE DATE TODO: ", due_date_todo
-
-    new_todo = To_Do(list_id=list_id,
-                    item=item,
-                    due_date_todo=due_date_todo,
-                    status_notdone=status_notdone,
-                    todo_location_name=todo_location_name,
-                    todo_location_address=todo_location_address)
-
-    db.session.add(new_todo)
-    db.session.commit()
-    # print "\n\n\n\n New ToDo:"
-    print new_todo
-    todo_dict = {
-        "to_do_id" : new_todo.to_do_id,
-        "list_id" : new_todo.list_id,
-        "item" : new_todo.item,
-        "due_date_todo" : new_todo.due_date_todo,
-        "status_notdone" : new_todo.status_notdone,
-        "todo_location_name" : new_todo.todo_location_name,
-        "todo_location_address" : new_todo.todo_location_address
-    }
-    return jsonify(todo_dict)
-
     # return redirect(url_for('lists', list_id=list_id))
 
-@app.route("/new_shopping/<int:list_id>", methods=["POST"])
-def new_shopping(list_id):
-    "get shopping form data and commit it"
-    # print "\n\n\n\n List ID:", list_id
-
-    # item_list = request.form.getlist('item')
-    # status_notdone_list = request.form.getlist('status_notdone')
-
-    # for i in range(len(item_list)):
-    #     item = item_list[i]
-    #     if status_notdone_list[i]=='on':
-    #         status_notdone = False
-    #     else:
-    #         status_notdone = True
-    #     print "status_notdone: ", status_notdone
-
-    #     new_shopping = To_Do(list_id=list_id,
-    #                     item=item,
-    #                     status_notdone=status_notdone)
-
-    #     db.session.add(new_shopping)
-    #     db.session.commit()
-    #     print "\n\n\n\n New Shopping:"
-    #     print new_shopping
-
-    # return "new shopping form"
-
-    item_list = request.form.get('item')
-    status_notdone_list = request.form.get('status_notdone')
-
-    item = item_list
-    if status_notdone_list=='on':
-        status_notdone = False
-    else:
-        status_notdone = True
-    print "status_notdone: ", status_notdone
-
-    new_shopping = Shopping(list_id=list_id,
-                    item=item,
-                    status_notdone=status_notdone)
-
-    db.session.add(new_shopping)
-    db.session.commit()
-    print "\n\n\n\n New Shopping:"
-    print new_shopping
-
-    return redirect(url_for('lists', list_id=list_id))
 
 ################## Edit existing lists routes ################
 

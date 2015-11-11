@@ -8,31 +8,31 @@
                 Item: {{ item.item }}, Incomplete?: {{ item.status_notdone }},
                     {% if item.due_date_shopping %}
                         Due Date: {{ item.due_date_shopping }}
-                    {% endif %}
-            <br>
+                    {% endif %} <br>
             {% endfor %}
+            <div class="shopping_item">
+                <form id="new-shopping-item" style="none;" action="/new_shopping/{{ this_list.list_id }}" method="POST">
+                    <div id = "item-wrapper">
+                        <div class="shopping_field">
+                            Task:
+                            <input type="text" class="list_row" name="item" placeholder="Enter Task" style="width: 100px;">
+                           Status(check if task is done):
+                           <input type="checkbox" class="list_row" id="checkbox1" name="status_notdone"><br>
+                        </div>
+                    </div><br>
 
-    <form id="new-shopping-list" style="none;" action="/new_shopping/{{ this_list.list_id }}" method="POST">
-        <div id = "list-wrapper">
-            <div class="list-field">
-                Task:
-                <input type="text" class="list_row" name="item" placeholder="Enter Task" style="width: 100px;">
-               Status(check if task is done):
-               <input type="checkbox" class="list_row" id="checkbox1" name="status_notdone"><br>
+                    <input type="submit" name="shopping" id="formSubmitId" value="Save list"></input><br>
+                    * optional fields
+                </form>
             </div>
-        </div><br>
-
-        <input type="submit" name="shopping" id="formSubmitId" value="Save list"></input><br>
-        * optional fields
-
-    </form>
         {% endif %}
+
 
         {% if this_list.list_type=='todo' %}
                 todo <br>
 
             {% for item in this_list.to_dos %}
-            <div class="">
+            <div class="todo_item">
 
                 Item: {{ item.item }}, Incomplete?: {{ item.status_notdone }},
                     {% if item.due_date_todo %}
@@ -42,52 +42,62 @@
             {% endfor %}
 
 
-        <form id="new-todo-list" style="none;" action="/new_todo/{{ this_list.list_id }}" method="POST">
-            <div id = "list-container">
-                <div class="list-field">
-                    Task:
-                    <input type="text" class="list_row" name="item" placeholder="Enter Task" style="width: 100px;">
-                    Due date?*
-                   <input type="text" name="due_date_todo" class="datepicker" placeholder="Due Date" style="width:200px">
-                   Status(check if task is done):
-                   <input type="checkbox" class="list_row" name="status_notdone"><br>
-                   Location?*
-                    <input type="text" name="todo_location_name" placeholder="Where does this task occur?" style="width:150px">
-                    <input type="text" name="todo_location_address" placeholder="Street address, city, state, zip" style="width:300px"><br><br>
-                 </div>
-            </div><br>
+            <form id="new-todo-item" style="none;" action="/new_todo/{{ this_list.list_id }}" method="POST">
+                <div id = "item-wrapper">
+                    <div class="todo_field">
+                        Task:
+                        <input type="text" class="list_row" name="item" placeholder="Enter Task" style="width: 100px;">
+                        Due date?*
+                       <input type="text" name="due_date_todo" class="datepicker" placeholder="Due Date" style="width:200px">
+                       Status(check if task is done):
+                       <input type="checkbox" class="list_row" name="status_notdone"><br>
+                       Location?*
+                        <input type="text" name="todo_location_name" placeholder="Where does this task occur?" style="width:150px">
+                        <input type="text" name="todo_location_address" placeholder="Street address, city, state, zip" style="width:300px"><br><br>
+                     </div>
+                </div><br>
 
-            <input type="submit" name="todo" id="formSubmitId" value="Save list"></input><br>
-            * optional fields
-        </form>
+                <input type="submit" name="todo" id="formSubmitId" value="Save list"></input><br>
+                * optional fields
+            </form>
+        {% endif %}
+    </div>
 
     <script>
 
-        $("#new-todo-list").on("submit", function (evt) {
+        $("#new-todo-item").on("submit", function (evt) {
             evt.preventDefault();
             var formData = $(this).serializeArray();
-
-            $.post('/new_todo/{{ this_list.list_id }}', formData, handleEventAdd);
-
+            $.post('/new_todo/{{ this_list.list_id }}', formData, handleToDoAdd);
         });
-
-        function handleEventAdd (results) {
+        function handleToDoAdd (results) {
             console.log(results);
+            var string = "Item: "+ results.item +" Incomplete?: " + results.status_notdone;
+            if (results.due_date_todo){
+                string += "Due Date: " + results.due_date_todo
+            }
+            var new_list_item = $('<div>').html(string)
+            $('.todo_field').append(new_list_item)
+        }
 
-            var string = "Item: "+ results.item +", Incomplete?: " + item.status_notdone;
+
+        $("#new-shopping-item").on("submit", function (evt) {
+            evt.preventDefault();
+            var formData = $(this).serializeArray();
+            $.post('/new_shopping/{{ this_list.list_id }}', formData, handleShoppingAdd);
+        });
+        function handleShoppingAdd (results) {
+            console.log(results);
+            var string = "Item: "+ results.item +" Incomplete?: " + results.status_notdone;
             if (results.due_date_shopping){
                 string += "Due Date: " + results.due_date_shopping
-
             }
-
             var new_list_item = $('<div>').html(string)
-            $('body').append(new_list_item)
+            $('.shopping_field').append(new_list_item)
         }
 
     </script>
-        {% endif %}
 
 
-    </div>
 
 {% endblock %}
