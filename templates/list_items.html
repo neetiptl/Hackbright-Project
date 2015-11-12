@@ -4,12 +4,15 @@
         <h1 id="list-items-title">{{this_list.name}}</h1>
         {% if this_list.list_type=='shopping' %}
                 shopping <br>
-            {% for item in this_list.shoppings %}
-                Item: {{ item.item }}, Incomplete?: {{ item.status_notdone }},
-                    {% if item.due_date_shopping %}
-                        Due Date: {{ item.due_date_shopping }}
-                    {% endif %} <br>
-            {% endfor %}
+            <div id="shopping_list">
+                {% for item in this_list.shoppings %}
+                    Item: {{ item.item }}, Incomplete?: {{ item.status_notdone }},
+                        {% if item.due_date_shopping %}
+                            Due Date: {{ item.due_date_shopping }}
+                        {% endif %} 
+                        <input type="button" class="doneButton" id="doneShopping_{{ item.shopping_id }}" name="status_done"><br><br>
+                {% endfor %}
+            </div>
             <div class="shopping_item">
                 <form id="new-shopping-item" style="none;" action="/new_shopping/{{ this_list.list_id }}" method="POST">
                     <div id = "item-wrapper">
@@ -28,43 +31,48 @@
         {% endif %}
 
 
-        {% if this_list.list_type=='todo' %}
-                todo <br>
+        {% if this_list.list_type=='to-do' %}
+                to-do <br>
+            <div id="todo_list">
+                {% for item in this_list.to_dos %}
+                <div class="todo_item">
+                    Item: {{ item.item }}, Incomplete?: {{ item.status_notdone }},
+                        {% if item.due_date_todo %}
+                            Due Date: {{ item.due_date_todo }}
+                        {% endif %}
+                        <input type="button" class="doneButton" id="doneToDo_{{ item.to_do_id }}" name="status_done"><br><br>
 
-            {% for item in this_list.to_dos %}
-            <div class="todo_item">
-
-                Item: {{ item.item }}, Incomplete?: {{ item.status_notdone }},
-                    {% if item.due_date_todo %}
-                        Due Date: {{ item.due_date_todo }}
-                    {% endif %}
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
 
+            <div class="todo_item">
+                <form id="new-todo-item" style="none;" action="/new_todo/{{ this_list.list_id }}" method="POST">
+                    <div id = "item-wrapper">
+                        <div class="todo_field">
+                            Task:
+                            <input type="text" class="list_row" name="item" placeholder="Enter Task" style="width: 100px;">
+                            Due date?*
+                            <input type="text" name="due_date_todo" class="datepicker" placeholder="Due Date" style="width:200px">
+                           Status(check if task is done):
+                            <input type="checkbox" class="list_row" name="status_notdone"><br>
+                           Location?*
+                            <input type="text" name="todo_location_name" placeholder="Where does this task occur?" style="width:150px">
+                            <input type="text" name="todo_location_address" placeholder="Street address, city, state, zip" style="width:300px"><br><br>
+                         </div>
+                    </div><br>
 
-            <form id="new-todo-item" style="none;" action="/new_todo/{{ this_list.list_id }}" method="POST">
-                <div id = "item-wrapper">
-                    <div class="todo_field">
-                        Task:
-                        <input type="text" class="list_row" name="item" placeholder="Enter Task" style="width: 100px;">
-                        Due date?*
-                       <input type="text" name="due_date_todo" class="datepicker" placeholder="Due Date" style="width:200px">
-                       Status(check if task is done):
-                       <input type="checkbox" class="list_row" name="status_notdone"><br>
-                       Location?*
-                        <input type="text" name="todo_location_name" placeholder="Where does this task occur?" style="width:150px">
-                        <input type="text" name="todo_location_address" placeholder="Street address, city, state, zip" style="width:300px"><br><br>
-                     </div>
-                </div><br>
-
-                <input type="submit" name="todo" id="formSubmitId" value="Save list"></input><br>
-                * optional fields
-            </form>
+                    <input type="submit" name="todo" id="formSubmitId" value="Save list"></input><br>
+                    * optional fields
+                </form>
+            </div>
         {% endif %}
+
+        <input type="submit" name="edit" id="edit_list" value="Edit list"></input>
     </div>
 
     <script>
-
+// handle adding to lists in db and on screen
         $("#new-todo-item").on("submit", function (evt) {
             evt.preventDefault();
             var formData = $(this).serializeArray();
@@ -74,12 +82,11 @@
             console.log(results);
             var string = "Item: "+ results.item +" Incomplete?: " + results.status_notdone;
             if (results.due_date_todo){
-                string += "Due Date: " + results.due_date_todo
+                string += "Due Date: " + results.due_date_todo;
             }
-            var new_list_item = $('<div>').html(string)
-            $('.todo_field').append(new_list_item)
+            var new_list_item = $('<div>').html(string);
+            $('#todo_list').append(new_list_item);
         }
-
 
         $("#new-shopping-item").on("submit", function (evt) {
             evt.preventDefault();
@@ -90,11 +97,37 @@
             console.log(results);
             var string = "Item: "+ results.item +" Incomplete?: " + results.status_notdone;
             if (results.due_date_shopping){
-                string += "Due Date: " + results.due_date_shopping
+                string += "Due Date: " + results.due_date_shopping;
             }
-            var new_list_item = $('<div>').html(string)
-            $('.shopping_field').append(new_list_item)
-        }
+            var new_list_item = $('<div>').html(string);
+            $('#shopping_list').append(new_list_item);
+        };
+//
+
+//function to repopulate toDo list displayed with edits
+        function populateToDoList () {
+            console.log("in populateToDoList js function");
+            //empty div of old list   
+            //FIXME - won't this delete my jinja populating loops? Should they be down here?
+            // or repeat down here. those are for initial display?
+            $('#list-items').empty();
+            //go to '/lists/<int:list_id>' server route
+            // $.post('lists/<int:list_id>', )
+            //return json of full toDo list
+
+        };
+
+        $(".doneButton").on("click", function (evt) {
+            //identify which button was clicked --> which item
+            alert(this.id);
+            var idOfClickedButton = { 'idOfClickedButton' : this.id };
+            console.log(idOfClickedButton);
+            //go to server and remove from db
+
+            $.post('/change_task_status', idOfClickedButton, populateToDoList);
+        });
+
+
 
     </script>
 

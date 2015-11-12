@@ -105,6 +105,8 @@ def lists(list_id):
 
     return render_template("list_items.html", this_list=this_list)
 
+
+
 ############### Create new lists routes  ###################
 @app.route('/new_list_base', methods=["GET"])
 def new_list_base():
@@ -139,7 +141,6 @@ def base_form():
     groups = Group(user_id=created_by,
                     list_id=list_.list_id,
                     permission = True)
-
 
     db.session.add(groups)
     db.session.commit()
@@ -190,7 +191,7 @@ def new_todo(list_id):
 
 @app.route("/new_shopping/<int:list_id>", methods=["POST"])
 def new_shopping(list_id):
-    "get shopping form data and commit it"
+    """get shopping form data and commit it"""
 
     item_list = request.form.get('item')
     status_notdone_list = request.form.get('status_notdone')
@@ -207,8 +208,6 @@ def new_shopping(list_id):
 
     db.session.add(new_shopping)
     db.session.commit()
-    print "\n\n\n\n New Shopping:"
-    print new_shopping
     shopping_dict = {
         "list_id" : new_shopping.list_id,
         "item" : new_shopping.item,
@@ -216,7 +215,31 @@ def new_shopping(list_id):
     }
 
     return jsonify(shopping_dict)
-    
+
+@app.route("/change_task_status", methods=["POST"])
+def change_task_status():
+    """Change list status if task is complete"""
+    idOfClickedButton = request.form.get('idOfClickedButton')
+    print "\n\n\n\n", "in change task status route", idOfClickedButton
+    list_type = idOfClickedButton.rstrip('_')
+    print list_type
+    item_to_remove_id = idOfClickedButton.lstrip('_')
+    print item_to_remove_id
+    ## Update row in shoppings or to_dos table
+    if list_type == "doneToDo":
+        todo_row = To_Do.query.filter_by(to_do_id=to_do_id).one()
+        todo_row.status_notdone = False
+    elif list_type == "doneShopping":
+        shoppings_row = Shoppings.query.filter_by(shopping_id=item_to_remove_id).one()
+        shoppings_row.status_notdone = False
+
+    return "status updated"
+
+
+# @app.route()
+
+
+
 #    return redirect(url_for('lists', list_id=list_id))
 
    # print "\n\n\n\n List ID:", list_id
