@@ -1,0 +1,10 @@
+
+#listItemsTable {
+    border : 1px solid purple;
+    width : 100%;
+    background-color: yellow;
+}
+
+tr,td {
+    border : 1px solid black;
+}
