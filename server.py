@@ -105,8 +105,13 @@ def lists(list_id):
     this_list = List.query.filter_by(list_id=list_id).one()
     permissions = Group.query.filter_by(list_id=list_id).all()
     print permissions
+    list_type = this_list.list_type
+    print list_type
 
-    return render_template("list_items.html", this_list=this_list, permissions=permissions)
+
+    return render_template("list_items.html", this_list=this_list, 
+                                            permissions=permissions, 
+                                            list_type=list_type)
 
 
 
@@ -120,7 +125,7 @@ def new_list_base():
 @app.route('/new_list_base', methods=['POST'])
 def base_form():
 
-    #Get form data and add to database
+#Get form data and add to database
     name = request.form['name']
     due_date_list = request.form['due-date-list']
     list_location_name = request.form['list_location_name']
@@ -195,18 +200,20 @@ def new_todo(list_id):
 
     db.session.add(new_todo)
     db.session.commit()
-    # print "\n\n\n\n New ToDo:"
+    print "\n\n\n\n New ToDo:"
     print new_todo
-    todo_dict = {
-        "to_do_id" : new_todo.to_do_id,
-        "list_id" : new_todo.list_id,
-        "item" : new_todo.item,
-        "due_date_todo" : new_todo.due_date_todo,
-        "status_notdone" : new_todo.status_notdone,
-        "todo_location_name" : new_todo.todo_location_name,
-        "todo_location_address" : new_todo.todo_location_address
-    }
-    return jsonify(todo_dict)
+    print "new todo json_list", json_list(list_id)
+    return json_list(list_id)
+    # todo_dict = {
+    #     "to_do_id" : new_todo.to_do_id,
+    #     "list_id" : new_todo.list_id,
+    #     "item" : new_todo.item,
+    #     "due_date_todo" : new_todo.due_date_todo,
+    #     "status_notdone" : new_todo.status_notdone,
+    #     "todo_location_name" : new_todo.todo_location_name,
+    #     "todo_location_address" : new_todo.todo_location_address
+    # }
+    # return jsonify(todo_dict)
 
 @app.route("/new_shopping/<int:list_id>", methods=["POST"])
 def new_shopping(list_id):
@@ -227,13 +234,17 @@ def new_shopping(list_id):
 
     db.session.add(new_shopping)
     db.session.commit()
-    shopping_dict = {
-        "list_id" : new_shopping.list_id,
-        "item" : new_shopping.item,
-        "status_notdone" : new_shopping.status_notdone
-    }
+    print "\n\n\n\n New Shopping item:"
+    print new_shopping
+    print "new shopping json_list", json_list(list_id)
+    return json_list(list_id)
+    # shopping_dict = {
+    #     "list_id" : new_shopping.list_id,
+    #     "item" : new_shopping.item,
+    #     "status_notdone" : new_shopping.status_notdone
+    # }
 
-    return jsonify(shopping_dict)
+    # return jsonify(shopping_dict)
 
 @app.route("/change_task_status", methods=["POST"])
 def change_task_status():
@@ -255,6 +266,11 @@ def change_task_status():
         list_id = list_row.list_id
 
     db.session.commit()
+    return json_list(list_id)
+
+
+def json_list(list_id):
+    """Given a list ID, return json string of list"""
 
     this_list = List.query.filter_by(list_id=list_id).one()
     current_list_json = []
@@ -262,7 +278,7 @@ def change_task_status():
 
     if this_list.list_type == 'shopping':
         for item in this_list.shoppings:
-            print item
+            print "item", item
             current_list_json.append = ({ "shopping_id": item.shopping_id,
                                         "list_id" : item.list_id,
                                         "item" : item.item,
@@ -282,8 +298,7 @@ def change_task_status():
                                     })
     print current_list_json
 
-
-    # return to json to ajax
+    # return json to ajax
     current_list_json_string = json.dumps(current_list_json)
     return current_list_json_string
 
