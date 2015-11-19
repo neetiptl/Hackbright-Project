@@ -134,7 +134,7 @@
     function clickEvent (){
         $(".doneButton").on("click", function (evt) {
             //identify which button was clicked which item
-            alert("DoneButton event"+this.id);
+            alert("DoneButton event"+ this.id);
             var list_type = $("#" + this.id).data("listtype");
             console.log(list_type);         
             var postParams = { 'idOfClickedButton' : this.id, 'listtype' : list_type};

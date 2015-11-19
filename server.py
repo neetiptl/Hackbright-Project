@@ -306,7 +306,6 @@ def json_list(list_id):
 
 
 #######TWILIO#############
-#add parameters
 def twilio_texts(list_id):
     """Respond to db changes with a text message to ppl on list."""
 
@@ -324,11 +323,9 @@ def twilio_texts(list_id):
             message = "{} edited {}".format(current_user_name,list_name)
             print "message", message
 
-    client.messages.create(
-        to = mobile_number, 
-        from_="+17329926464", 
-        body=message
-        )
+            client.messages.create(to = mobile_number, 
+                                from_="+17329926464", 
+                                body=message)
  
     # resp = twilio.twiml.Response()
     # resp.sms(message)  # .message for message from message, .sms for message from call, .say to say in call
