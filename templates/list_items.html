@@ -18,7 +18,7 @@
                 </tr></thead>
                 <tbody>
                    {% for item in this_list.shoppings %}
-                        <div class="todo_item">
+                        <div class="shopping_item">
                             <tr>
                                 <td>{{ item.item }}</td>
                                 <td>
@@ -27,7 +27,8 @@
                                         Incomplete- click if completed
                                     {% else %}
                                         Complete!
-                                    {% endif %}</td>
+                                    {% endif %}
+                                </td>
                             </tr>
                         </div>
                     {% endfor %}
@@ -45,7 +46,7 @@
                     </div>
                 </div><br>
 
-                <input type="submit" name="shopping" id="formSubmitId" value="Save list"></input><br>
+                <input type="submit" name="shopping" id="formSubmitId" value="Save/Edit list"></input><br>
                 * optional fields
             </form>
         </div>
@@ -133,7 +134,7 @@
     function clickEvent (){
         $(".doneButton").on("click", function (evt) {
             //identify which button was clicked which item
-            alert("DoneButton event", this.id);
+            alert("DoneButton event"+this.id);
             var list_type = $("#" + this.id).data("listtype");
             console.log(list_type);         
             var postParams = { 'idOfClickedButton' : this.id, 'listtype' : list_type};
@@ -150,7 +151,7 @@
     };
 
     function populateToDoList (current_list) {
-        debugger;
+        // debugger;
         $('#list-items-table').empty();
         var json_list = JSON.parse(current_list);
         console.log(json_list);
@@ -190,7 +191,7 @@
         console.log(typeof(json_list));
 
         var tbody = $("#listItemsTable > tbody").html("");
-       //for item in toDo List
+       //for item in shopping List
         for (i=0; i<json_list.length; i++){
             var shopping_id = json_list[i].shopping_id;
             var list_id = json_list[i].list_id;
@@ -202,9 +203,12 @@
             var status = "Completed";
             if (status_notdone){
                 status = "<input type='button' class='doneButton' data-listtype='Shopping' id=" + shopping_id + " name='status_done'>Incomplete- click if completed";
+            }
+            else {
+                status = "<div id=" + shopping_id + " name='status_done'>Completed!</div>";
             };
 
-            var rowText = "<tr><td>" + item + "</td><td>" + status_notdone + "</td></tr>";
+            var rowText = "<tr><td>" + item + "</td><td>" + status + "</td></tr>";
             console.log(rowText);
                 $(rowText).appendTo(tbody);
         };
@@ -212,7 +216,6 @@
     };
 
 </script>
-
 
 
 {% endblock %}

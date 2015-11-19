@@ -6,6 +6,13 @@ from flask import Flask, render_template, redirect, request, session, flash, jso
 from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, User, List, Group, To_Do, Shopping
 import json
+import twilio.twiml
+from twilio.rest import TwilioRestClient
+import os
+sid = os.environ.get('TWILIO_ACCOUNT_SID')
+token = os.environ.get('TWILIO_AUTH_TOKEN')
+number = os.environ.get('TWILIO_NUMBER')
+client = TwilioRestClient(sid, token)
 
 app = Flask(__name__)
 
@@ -48,7 +55,6 @@ def login_info():
     session["user_id"] = user.user_id
 
     flash("Logged in")
- #   return redirect("/users/%s" % user.user_id)
     return redirect("/existing_lists")
 
 @app.route('/register', methods=['GET'])
@@ -136,6 +142,7 @@ def base_form():
     created_by_name_obj = User.query.filter_by(user_id=created_by).one()
     created_by_name = created_by_name_obj.name
 #FIXME - change created_by to int, then commit created_by=created_by
+#add to list table
     list_ = List(name=name,
                 list_type=list_type, 
                 due_date_list=due_date_list, 
@@ -145,7 +152,7 @@ def base_form():
     print "list: ", list_
     db.session.add(list_)
     db.session.commit()
-
+#add user to groups table
     groups = Group(user_id=created_by,
                     list_id=list_.list_id,
                     permission = True)
@@ -153,8 +160,10 @@ def base_form():
     db.session.commit()
     print "group: ", groups
 
-    #add new users to list
-    user_name_permissions = request.form.get('listPermissions')
+#add new users to groups table
+#FIXME: add more users
+#FIXME: add users where only have read permission, not write (e.g. permssion = False)
+    user_name_permissions = request.form['listPermissions']
     print "user_name_permissions", user_name_permissions
     user_being_added = User.query.filter_by(name=user_name_permissions).one()
     print "user_being_added", user_being_added
@@ -162,8 +171,9 @@ def base_form():
                                 list_id=list_.list_id,
                                 permission = True)
     print "user_permissions_row", user_permissions_row
-    db.session.add(groups)
+    db.session.add(user_permissions_row)
     db.session.commit()
+    print user_permissions_row.group_id
 
     return redirect(url_for('lists', list_id=list_.list_id))
 
@@ -204,16 +214,6 @@ def new_todo(list_id):
     print new_todo
     print "new todo json_list", json_list(list_id)
     return json_list(list_id)
-    # todo_dict = {
-    #     "to_do_id" : new_todo.to_do_id,
-    #     "list_id" : new_todo.list_id,
-    #     "item" : new_todo.item,
-    #     "due_date_todo" : new_todo.due_date_todo,
-    #     "status_notdone" : new_todo.status_notdone,
-    #     "todo_location_name" : new_todo.todo_location_name,
-    #     "todo_location_address" : new_todo.todo_location_address
-    # }
-    # return jsonify(todo_dict)
 
 @app.route("/new_shopping/<int:list_id>", methods=["POST"])
 def new_shopping(list_id):
@@ -237,14 +237,8 @@ def new_shopping(list_id):
     print "\n\n\n\n New Shopping item:"
     print new_shopping
     print "new shopping json_list", json_list(list_id)
-    return json_list(list_id)
-    # shopping_dict = {
-    #     "list_id" : new_shopping.list_id,
-    #     "item" : new_shopping.item,
-    #     "status_notdone" : new_shopping.status_notdone
-    # }
 
-    # return jsonify(shopping_dict)
+    return json_list(list_id)
 
 @app.route("/change_task_status", methods=["POST"])
 def change_task_status():
@@ -266,6 +260,9 @@ def change_task_status():
         list_id = list_row.list_id
 
     db.session.commit()
+
+
+
     return json_list(list_id)
 
 
@@ -279,7 +276,7 @@ def json_list(list_id):
     if this_list.list_type == 'shopping':
         for item in this_list.shoppings:
             print "item", item
-            current_list_json.append = ({ "shopping_id": item.shopping_id,
+            current_list_json.append({ "shopping_id": item.shopping_id,
                                         "list_id" : item.list_id,
                                         "item" : item.item,
                                         "status_notdone" : item.status_notdone
@@ -298,9 +295,46 @@ def json_list(list_id):
                                     })
     print current_list_json
 
+    # Twilio notification to all users on list
+    twilio_texts(list_id)
+
+
     # return json to ajax
     current_list_json_string = json.dumps(current_list_json)
     return current_list_json_string
+
+
+
+#######TWILIO#############
+#add parameters
+def twilio_texts(list_id):
+    """Respond to db changes with a text message to ppl on list."""
+
+    users_on_this_list = Group.query.filter_by(list_id=list_id).all()
+    current_list = List.query.filter_by(list_id=list_id).one()
+    current_user = session["user_id"]
+    current_user_name = User.query.filter_by(user_id=current_user).one()
+    current_user_name = current_user_name.name
+    list_name = current_list.name
+
+    for user in users_on_this_list:
+        if user.user_id != current_user:
+            mobile_number = user.user.mobile
+            print mobile_number
+            message = "{} edited {}".format(current_user_name,list_name)
+            print "message", message
+
+    client.messages.create(
+        to = mobile_number, 
+        from_="+17329926464", 
+        body=message
+        )
+ 
+    # resp = twilio.twiml.Response()
+    # resp.sms(message)  # .message for message from message, .sms for message from call, .say to say in call
+    # return str(resp)
+
+
 
 ################ Debug Toolbar #########################
 if __name__ == "__main__":

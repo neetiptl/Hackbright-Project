@@ -1,3 +1,4 @@
 env
 *.pyc
 twilio_hb_wkshp
+secrets.sh
