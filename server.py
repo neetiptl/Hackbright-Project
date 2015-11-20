@@ -320,7 +320,7 @@ def twilio_texts_list_edits(list_id):
     list_name = current_list.name
 
     for person in users_on_this_list:
-        if user.user_id != current_user:
+        if person.user_id != current_user:
             mobile_number = person.user.mobile
             other_persons_name = person.user.name
             print mobile_number
