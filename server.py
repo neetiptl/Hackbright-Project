@@ -9,6 +9,9 @@ import json
 import twilio.twiml
 from twilio.rest import TwilioRestClient
 import os
+from geopy.geocoders import Nominatim
+from geopy.distance import vincenty
+
 sid = os.environ.get('TWILIO_ACCOUNT_SID')
 token = os.environ.get('TWILIO_AUTH_TOKEN')
 number = os.environ.get('TWILIO_NUMBER')
@@ -110,9 +113,9 @@ def lists(list_id):
 
     this_list = List.query.filter_by(list_id=list_id).one()
     permissions = Group.query.filter_by(list_id=list_id).all()
-    print permissions
+    # print permissions
     list_type = this_list.list_type
-    print list_type
+    # print list_type
 
 
     return render_template("list_items.html", this_list=this_list, 
@@ -149,7 +152,7 @@ def base_form():
                 list_location_address=list_location_address,
                 list_location_name=list_location_name,
                 created_by=created_by_name)
-    print "list: ", list_
+    # print "list: ", list_
     db.session.add(list_)
     db.session.commit()
 #add user to groups table
@@ -158,22 +161,22 @@ def base_form():
                     permission = True)
     db.session.add(groups)
     db.session.commit()
-    print "group: ", groups
+    # print "group: ", groups
 
 #add new users to groups table
 #FIXME: add more users
 #FIXME: add users where only have read permission, not write (e.g. permssion = False)
     user_name_permissions = request.form['listPermissions']
-    print "user_name_permissions", user_name_permissions
+    # print "user_name_permissions", user_name_permissions
     user_being_added = User.query.filter_by(name=user_name_permissions).one()
-    print "user_being_added", user_being_added
+    # print "user_being_added", user_being_added
     user_permissions_row = Group(user_id=user_being_added.user_id,
                                 list_id=list_.list_id,
                                 permission = True)
-    print "user_permissions_row", user_permissions_row
+    # print "user_permissions_row", user_permissions_row
     db.session.add(user_permissions_row)
     db.session.commit()
-    print user_permissions_row.group_id
+    # print user_permissions_row.group_id
 
     return redirect(url_for('lists', list_id=list_.list_id))
 
@@ -210,9 +213,9 @@ def new_todo(list_id):
 
     db.session.add(new_todo)
     db.session.commit()
-    print "\n\n\n\n New ToDo:"
-    print new_todo
-    print "new todo json_list", json_list(list_id)
+    # print "\n\n\n\n New ToDo:"
+    # print new_todo
+    # print "new todo json_list", json_list(list_id)
     return json_list(list_id)
 
 @app.route("/new_shopping/<int:list_id>", methods=["POST"])
@@ -234,9 +237,9 @@ def new_shopping(list_id):
 
     db.session.add(new_shopping)
     db.session.commit()
-    print "\n\n\n\n New Shopping item:"
-    print new_shopping
-    print "new shopping json_list", json_list(list_id)
+    # print "\n\n\n\n New Shopping item:"
+    # print new_shopping
+    # print "new shopping json_list", json_list(list_id)
 
     return json_list(list_id)
 
@@ -245,18 +248,18 @@ def change_task_status():
     """Change list status if task is complete"""
     list_types = request.form.get('listtype')
     list_type_id = request.form.get('idOfClickedButton')
-    print "\n\n\n\n", "in change task status route", list_types, list_type_id
+    # print "\n\n\n\n", "in change task status route", list_types, list_type_id
 
     ## Update row in shoppings or to_dos table)
     if  list_types == "ToDo":
         list_row = To_Do.query.filter_by(to_do_id=list_type_id).one()
         list_row.status_notdone = False
-        print list_row
+        # print list_row
         list_id = list_row.list_id
     elif list_types == "Shopping":
         list_row = Shopping.query.filter_by(shopping_id=list_type_id).one()
         list_row.status_notdone = False
-        print list_row
+        # print list_row
         list_id = list_row.list_id
 
     db.session.commit()
@@ -271,11 +274,11 @@ def json_list(list_id):
 
     this_list = List.query.filter_by(list_id=list_id).one()
     current_list_json = []
-    print this_list
+    # print this_list
 
     if this_list.list_type == 'shopping':
         for item in this_list.shoppings:
-            print "item", item
+            # print "item", item
             current_list_json.append({ "shopping_id": item.shopping_id,
                                         "list_id" : item.list_id,
                                         "item" : item.item,
@@ -284,7 +287,7 @@ def json_list(list_id):
 
     if this_list.list_type == 'to-do':
         for item in this_list.to_dos:
-            print "item", item
+            # print "item", item
             current_list_json.append({ "to_do_id": item.to_do_id,
                                         "list_id" : item.list_id,
                                         "item" : item.item,
@@ -293,10 +296,10 @@ def json_list(list_id):
                                         "todo_location_name" : item.todo_location_name,
                                         "todo_location_address" : item.todo_location_address
                                     })
-    print current_list_json
+    # print current_list_json
 
     # Twilio notification to all users on list
-    twilio_texts(list_id)
+    twilio_texts_list_edits(list_id)
 
 
     # return json to ajax
@@ -306,7 +309,7 @@ def json_list(list_id):
 
 
 #######TWILIO#############
-def twilio_texts(list_id):
+def twilio_texts_list_edits(list_id):
     """Respond to db changes with a text message to ppl on list."""
 
     users_on_this_list = Group.query.filter_by(list_id=list_id).all()
@@ -316,22 +319,65 @@ def twilio_texts(list_id):
     current_user_name = current_user_name.name
     list_name = current_list.name
 
-    for user in users_on_this_list:
+    for person in users_on_this_list:
         if user.user_id != current_user:
-            mobile_number = user.user.mobile
+            mobile_number = person.user.mobile
+            other_persons_name = person.user.name
             print mobile_number
-            message = "{} edited {}".format(current_user_name,list_name)
+            message = "Hi {}! FYI, {} edited {}".format(other_persons_name, current_user_name,list_name)
             print "message", message
 
             client.messages.create(to = mobile_number, 
                                 from_="+17329926464", 
                                 body=message)
- 
-    # resp = twilio.twiml.Response()
-    # resp.sms(message)  # .message for message from message, .sms for message from call, .say to say in call
-    # return str(resp)
+    return 
 
 
+#########LOCATION############
+@app.route("/location", methods = ["GET"])
+def location():
+    """If user's browser/login location is close to locations of his/her list, send a text."""
+
+#latitude and longitude(from browser) of the currently logged-in user
+    lat = request.args.get('lat')
+    lon = request.args.get('lon')
+    # print "\n\n\n\n position from browser", lat, lon
+    current_location = (lat, lon)
+
+#lists current user is included on
+    current_user = session["user_id"]
+    current_user_lists = Group.query.filter_by(user_id=current_user).all()
+
+    current_user_obj = User.query.filter_by(user_id=current_user).one()
+    mobile_number = current_user_obj.mobile
+    print mobile_number
+
+#Loop through current user's lists and find distance between the list and the user.
+# If they're very close, remind the user to take care of the list.
+    for list_ in current_user_lists:
+        if (list_.checklist.list_location_address):
+            address = list_.checklist.list_location_address
+            # print "address", address
+#Nominatim:tool to search OSM by address and to generate synthetic addresses of OSM points (reverse geocoding). 
+            geolocator = Nominatim()
+            try:
+                location = geolocator.geocode(address)
+            except:
+                location = None
+            print location
+
+            if location != None:
+                print(location.address)
+                list_location = ((location.latitude, location.longitude))
+                distance = (vincenty(current_location, list_location).miles)
+                if distance <= 2:
+                    message = "{} is less than 2 miles from your location. \
+                                Maybe you should take care of {}.".format(location.address, list_.checklist.name)
+                    client.messages.create(to = mobile_number, 
+                                from_="+17329926464", 
+                                body=message)
+
+    return "success"
 
 ################ Debug Toolbar #########################
 if __name__ == "__main__":

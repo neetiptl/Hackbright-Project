@@ -6,7 +6,10 @@
         {% for group in user_list_groups %}
             <a href="/lists/{{ group.checklist.list_id }}">
             {{ group.checklist.name }} 
-            </a> Due on: {{ group.checklist.due_date_list}} Created by: {{ group.checklist.created_by }}<br>
+            </a> Due on: {{ group.checklist.due_date_list}} Created by: {{ group.checklist.created_by }}
+                {% if group.checklist.list_location_address %}
+                    Location: {{ group.checklist.list_location_address }}
+                {% endif %}<br>
         {% endfor %}
     </div>
 
@@ -16,7 +19,23 @@
 
 
 
+<script>
+function showPosition(position){
+    console.log(position);
+    var lat = position.coords.latitude;
+    var lon = position.coords.longitude;
+    console.log(lat,lon);
+    var postParams = { 'lat' : lat, 'lon' : lon};
+    console.log(postParams)
+    $.get('/location', postParams, function() {
+        console.log("we're back")});
+};
+
+
+navigator.geolocation.getCurrentPosition(showPosition);
+
+
+</script>
+
 
 {% endblock %}
-
-<!-- Add button/form inside for loop to edit existing list. send info back to "/edit_existing_lists" [GET] route and render the list to be edited in "edit_existing_list.html" -->

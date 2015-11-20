@@ -67,7 +67,7 @@ class Group(db.Model):
     user_id = db.Column(db.Integer,db.ForeignKey('users.user_id'))
     list_id = db.Column(db.Integer,db.ForeignKey('lists.list_id'))
     permission = db.Column(db.Boolean, nullable = False, default = True)
-#FIXME default should be False
+#FIXME: permission = to edit list
 
     # Define relationship to user
     user = db.relationship("User",
