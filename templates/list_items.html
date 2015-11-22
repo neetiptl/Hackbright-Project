@@ -113,8 +113,7 @@
 //once the page is loaded, populateToDoList
     var type = $("#list-items").data("type");
     $(document).ready(clickEvent());
-    alert("ready");
-
+    document.forms[0].reset();
 
 // handle adding to todo lists in db and on screen
     $("#new-todo-item").on("submit", function (evt) {
@@ -134,7 +133,6 @@
     function clickEvent (){
         $(".doneButton").on("click", function (evt) {
             //identify which button was clicked which item
-            alert("DoneButton event"+ this.id);
             var list_type = $("#" + this.id).data("listtype");
             console.log(list_type);         
             var postParams = { 'idOfClickedButton' : this.id, 'listtype' : list_type};

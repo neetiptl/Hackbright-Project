@@ -169,16 +169,43 @@ def base_form():
     user_name_permissions = request.form['listPermissions']
     # print "user_name_permissions", user_name_permissions
     user_being_added = User.query.filter_by(name=user_name_permissions).one()
+    user_being_added_mobile = user_being_added.mobile
     # print "user_being_added", user_being_added
     user_permissions_row = Group(user_id=user_being_added.user_id,
                                 list_id=list_.list_id,
                                 permission = True)
     # print "user_permissions_row", user_permissions_row
-    db.session.add(user_permissions_row)
-    db.session.commit()
-    # print user_permissions_row.group_id
+    print user_permissions_row.group_id
+
+    # ask person being added if they want to be added to the list
+    message = "{}, {} is trying to add you to {} (list id = {}. Reply yes followed by the list id if you want to be added.".format(user_being_added.name, created_by_name, name, list_.list_id)
+    client.messages.create(to = user_being_added_mobile, 
+                                from_="+17329926464", 
+                                body=message)
 
     return redirect(url_for('lists', list_id=list_.list_id))
+
+@app.route('/inbound', methods=['POST'])
+def get_twilio_response():
+    """ Save to db if incoming text is 'Yes' """
+    resp = twilio.twiml.Response()
+    body = request.form['Body']
+    message, list_id = body.split(' ')
+    print message, list_id
+    resp.sms("Hello, Mobile Monkey")
+    from_number = request.values.get('From', None)
+    from_number = from_number.lstrip('+1')
+    print "from_number", from_number
+    if message == 'Yes':
+        user_permissions_row = User.query.filter_by(mobile=from_number).first() #should be .one() but all the numbers in the database are my cell #
+        groups = Group(user_id=user_permissions_row.user_id,
+                    list_id=list_id,
+                    permission = True)
+        db.session.add(groups)
+        db.session.commit()
+        print groups
+    return str(resp)
+
 
 @app.route('/new_todo/<int:list_id>', methods=['POST'])
 def new_todo(list_id):
@@ -288,10 +315,16 @@ def json_list(list_id):
     if this_list.list_type == 'to-do':
         for item in this_list.to_dos:
             # print "item", item
+            print "\n\n\n item due_date_todo", item.due_date_todo
+            if item.due_date_todo:
+                due_date_todo = item.due_date_todo.strftime("%Y-%m-%d")
+            else:
+                due_date_todo = "None"
+            print due_date_todo
             current_list_json.append({ "to_do_id": item.to_do_id,
                                         "list_id" : item.list_id,
                                         "item" : item.item,
-                                        "due_date_todo" : item.due_date_todo.strftime("%Y-%m-%d"),
+                                        "due_date_todo" : due_date_todo,
                                         "status_notdone" : item.status_notdone,
                                         "todo_location_name" : item.todo_location_name,
                                         "todo_location_address" : item.todo_location_address
@@ -336,7 +369,7 @@ def twilio_texts_list_edits(list_id):
 #########LOCATION############
 @app.route("/location", methods = ["GET"])
 def location():
-    """If user's browser/login location is close to locations of his/her list, send a text."""
+    """If user's browser/login location is close to locations of his/her list, send a Twilio text."""
 
 #latitude and longitude(from browser) of the currently logged-in user
     lat = request.args.get('lat')
