@@ -27,32 +27,32 @@ Running Nucleus Locally:
 
 Create a virtual environment 
 
-``
+```
 > virtualenv env
 > source env/bin/activate
-``
+```
 
 Install requirements
 
-``
+```
 > pip install -r requirements.txt
-``
+```
 
 Run the app 
 
-``
+```
 > python server.py
-``
+```
 
 
 Open your browser and navigate to 
 
-``
+```
 http://localhost:5000/
-``
+```
 
 Note: A Twilio account (set as 'TWILIO_ACCOUNT_SID'), authorization token (set as 'TWILIO_AUTH_TOKEN'), and phone number (set as 'TWILIO_NUMBER' are required to run this app. Add them to a secrets.sh file.
 
-``
+```
 > source secrets.sh
-``
+```
