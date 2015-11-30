@@ -24,7 +24,7 @@ app.secret_key = "ABC"
 
 app.jinja_env.undefined = StrictUndefined
 
-################ Login, Logout, and Registration routes #################
+################ Login, Logout, Account info and Registration routes #################
 @app.route('/')
 def index():
     """Homepage."""
@@ -56,6 +56,7 @@ def login_info():
         return redirect("/login")
 
     session["user_id"] = user.user_id
+    session["user_name"] = user.name
 
     flash("Logged in")
     return redirect("/existing_lists")
@@ -97,6 +98,15 @@ def logout():
     del session["user_id"]
     flash("Logged Out.")
     return redirect("/")
+
+@app.route('/account_info')
+def account_info():
+    """Display account information"""
+    
+    user_info = User.query.filter_by(user_id=session["user_id"]).one()
+
+    return render_template("account_info.html", user_info=user_info)
+
 ################ Display existing lists route ##############
 @app.route('/existing_lists')
 def existing_lists():
@@ -166,22 +176,23 @@ def base_form():
 #add new users to groups table
 #FIXME: add more users
 #FIXME: add users where only have read permission, not write (e.g. permssion = False)
-    user_name_permissions = request.form['listPermissions']
-    # print "user_name_permissions", user_name_permissions
-    user_being_added = User.query.filter_by(name=user_name_permissions).one()
-    user_being_added_mobile = user_being_added.mobile
-    # print "user_being_added", user_being_added
-    user_permissions_row = Group(user_id=user_being_added.user_id,
-                                list_id=list_.list_id,
-                                permission = True)
-    # print "user_permissions_row", user_permissions_row
-    print user_permissions_row.group_id
+    user_name_permissions = request.form.get('listPermissions')
+    print "user_name_permissions", user_name_permissions
+    if user_name_permissions:
+        user_being_added = User.query.filter_by(name=user_name_permissions).one()
+        user_being_added_mobile = user_being_added.mobile
+        # print "user_being_added", user_being_added
+        user_permissions_row = Group(user_id=user_being_added.user_id,
+                                    list_id=list_.list_id,
+                                    permission = True)
+        # print "user_permissions_row", user_permissions_row
+        print user_permissions_row.group_id
 
-    # ask person being added if they want to be added to the list
-    message = "{}, {} is trying to add you to {} (list id = {}. Reply yes followed by the list id if you want to be added.".format(user_being_added.name, created_by_name, name, list_.list_id)
-    client.messages.create(to = user_being_added_mobile, 
-                                from_="+17329926464", 
-                                body=message)
+        # ask person being added if they want to be added to the list
+        message = "{}, {} is trying to add you to {} (list id = {}. Reply yes followed by the list id if you want to be added.".format(user_being_added.name, created_by_name, name, list_.list_id)
+        client.messages.create(to = user_being_added_mobile, 
+                                    from_="+17329926464", 
+                                    body=message)
 
     return redirect(url_for('lists', list_id=list_.list_id))
 
@@ -404,14 +415,18 @@ def location():
                 list_location = ((location.latitude, location.longitude))
                 distance = (vincenty(current_location, list_location).miles)
                 if distance <= 2:
-                    message = "{} is less than 2 miles from your location. \
-                                Maybe you should take care of {}.".format(location.address, list_.checklist.name)
+                    message = "{} is less than 2 miles from your location. Maybe you should take care of {}.".format(location.address, list_.checklist.name)
                     client.messages.create(to = mobile_number, 
                                 from_="+17329926464", 
                                 body=message)
 
     return "success"
 
+@app.route("/show_location", methods=["GET"])
+def get_location():
+    """get location for map"""
+
+    return "success"
 ################ Debug Toolbar #########################
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point

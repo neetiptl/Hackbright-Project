@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
+<script>
+    var this_list_id = {{ this_list.list_id }};
+    console.log(this_list_id);
+</script>
+<!-- <script src="/static/js/list_items.js"></script>
+ -->
 <div id="list-items" data-type="{{ this_list.list_type }}">
     <h1 id="list-items-title">{{this_list.name}}</h1>
     <div id="list_permissions">
@@ -11,7 +17,7 @@
     {% if this_list.list_type=='shopping' %}
             shopping <br>
         <div id="shopping_list">
-            <table id="listItemsTable">
+            <table class="center" id="listItemsTable">
                 <thead><tr>
                     <td>ITEM</td>
                     <td>INCOMPLETE?</td>
@@ -56,7 +62,7 @@
     {% if this_list.list_type=='to-do' %}
             to-do <br>
         <div id="todo_list">
-            <table id="listItemsTable">
+            <table class="center" id="listItemsTable">
                 <thead><tr>
                     <td>ITEM</td>
                     <td>Due Date</td>
@@ -95,7 +101,7 @@
                         Due date?*
                         <input type="text" name="due_date_todo" class="datepicker" placeholder="Due Date" style="width:10%">
                        Status(check if task is done):
-                        <input type="checkbox" class="list_row" name="status_notdone">
+                        <input type="checkbox" class="list_row" name="status_notdone"></br>
                        Location?*
                         <input type="text" name="todo_location_name" placeholder="Where does this task occur?" style="width:20%">
                         <input type="text" name="todo_location_address" placeholder="Street address, city, state, zip" style="width:30%"><br><br>
@@ -111,21 +117,23 @@
 
 <script>
 //once the page is loaded, populateToDoList
+    console.log(this_list_id);
+    // debugger;
     var type = $("#list-items").data("type");
     $(document).ready(clickEvent());
-    document.forms[0].reset();
+    // document.forms[0].reset();
 
 // handle adding to todo lists in db and on screen
     $("#new-todo-item").on("submit", function (evt) {
         evt.preventDefault();
         var formData = $(this).serializeArray();
-        $.post('/new_todo/{{ this_list.list_id }}', formData, populateToDoList);
+        $.post('/new_todo/' + this_list_id, formData, populateToDoList);
     });
 
     $("#new-shopping-item").on("submit", function (evt) {
         evt.preventDefault();
         var formData = $(this).serializeArray();
-        $.post('/new_shopping/{{ this_list.list_id }}', formData, populateShoppingList);
+        $.post('/new_shopping/' + this_list_id, formData, populateShoppingList);
     });
 
 
@@ -212,8 +220,6 @@
         };
         clickEvent();
     };
-
 </script>
-
 
 {% endblock %}

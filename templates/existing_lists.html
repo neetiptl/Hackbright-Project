@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<script src="/static/js/existing_lists.js"></script>
 
     <div id="existing_lists">
         <h1 id="existing-lists-title">Existing Lists:</h1>
@@ -16,26 +17,6 @@
     <form action="/new_list_base" method="GET">
         <input type="submit" value="Create New List">
     </form>
-
-
-
-<script>
-function showPosition(position){
-    console.log(position);
-    var lat = position.coords.latitude;
-    var lon = position.coords.longitude;
-    console.log(lat,lon);
-    var postParams = { 'lat' : lat, 'lon' : lon};
-    console.log(postParams)
-    $.get('/location', postParams, function() {
-        console.log("we're back")});
-};
-
-
-navigator.geolocation.getCurrentPosition(showPosition);
-
-
-</script>
 
 
 {% endblock %}

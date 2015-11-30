@@ -1,13 +1,17 @@
 <!doctype html>
 <html>
 <head>
-    <title>PROJECT</title>
+  <title>PROJECT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" 
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <script src="https://code.jquery.com/jquery.js"></script>
   <meta charset="utf-8">
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   <link rel="stylesheet" href="/static/css/mycss.css">
+  <link href='https://fonts.googleapis.com/css?family=Raleway:400,500,800' rel='stylesheet' type='text/css'>
   <!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
   <script>
   $(function() {
@@ -17,25 +21,42 @@
 
 </head>
 <body>
+  <!-- Static navbar -->
+  <div class="navbar">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <div class="navbar-brand"><a href="/">Nucleus</a></div>
+                
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                  {% if "user_id" in session %}
+                      <li><a href="/existing_lists">Existing Lists</a></li>
+                      <li><a href="/account_info">{{ session["user_name"] }}'s Account Information</a></li>
+                      <li><a href="/logout">Logout</a></li>
 
-PROJECT
+                  {% else %}
+                      <li><a href="/login">Login</a></li>
+                      <li><a href="/register">Register</a></li>
+                  {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+  </div>
 
-{% if "user_id" in session %}
-    <a href="/logout">Logout</a>
-{% else %}
-    <a href="/login">Login</a>
-    <a href="/register">Register</a>
-{% endif %}
 
-<hr>
+
 
 {% for flash in get_flashed_messages() %}
   {{ flash }}
 {% endfor %}
 
-
-{% block content %}
-{% endblock %}
+<div class="container-fluid">
+  {% block content %}
+  {% endblock %}
+</div>
 
 <script src="/static/js/myjavascript.js"></script>
 

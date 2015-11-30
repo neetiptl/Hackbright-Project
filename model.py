@@ -145,13 +145,42 @@ class Shopping(db.Model):
 
 
 ##############################################################################
+# Add example data for testing
+
+def example_data_users():
+    """Create some sample user data"""
+
+    # If tests are run more than once, empty out existing data
+    User.query.delete()
+
+    for i, row in enumerate(open("data/users")):
+        row = row.rstrip()
+        name, mobile, email, password, user_location_name, user_location_address = row.split("|")
+
+        user = User(name=name,
+                    email=email,
+                    password=password,
+                    mobile=mobile,
+                    user_location_name=user_location_name,
+                    user_location_address=user_location_address
+                    )
+
+        # Add to session
+        db.session.add(user)
+
+    # Commit work
+    db.session.commit()
+
+
+
+##############################################################################
 # Helper functions
 
-def connect_to_db(app):
+def connect_to_db(app, db_uri='sqlite:///mydatabase.db'):
     """Connect the database to our Flask app."""
 
     # Configure to use our SQLite database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydatabase.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 #    app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
