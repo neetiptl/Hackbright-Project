@@ -1,52 +1,296 @@
 .headings {
     color: #337ab7;
-/*    background: url("../img/pencil.jpg") no-repeat center center fixed; 
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;*/
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+
     text-align: center;
+    padding-top: 3em;
 }
 
-/*html { 
-  background: url("../img/pencil.jpg") no-repeat center center fixed; 
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-}*/
+a:link {
+    color: #4d4d4d;
+}
 
-#listItemsTable {
-    border : 1px solid purple;
-    width : 800px;
-    opacity : .8;
-    background: url("../img/notebook.png");
+a:hover {
+    color: #76B041;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Playball', sans-serif;
+}
+
+.content {
+    font-family: 'Raleway', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    padding-left: 1em;
+}
+
+#copyright, #data-source {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
 }
 
 #user_info {
     text-align : center;
     font-size: 110%;
+    color: #337ab7;
+
     /*padding-top: 100px;*/
 }
 
-/*#list-items {
+.container {
+    height: 500px;
+    width: 600px;
+    margin: 10px auto;
+    position: relative;
     text-align: center;
-}*/
+}
+
+#listItems {
+  text-align: center;
+}
+
+.existingLists {
+  text-align: center;
+}
+
+#mapholder {
+    width: 400px;
+    height: 300px;
+    background-color: #CCC;
+    margin: 0 auto;
+    border-color: #4d4d4d;
+
+}
+
+
+.footer {
+    padding: 1em;
+}
 
 table.center {
     margin-left:auto; 
     margin-right:auto;
   }
 
-tr,td {
+/*tr,td {
     border : 1px solid grey;
+}*/
+
+
+
+#theBar {
+  color: #4d4d4d;
 }
 
-.nav, .navbar, .navbar-default, .navbar-default {
-    opacity : .8;
+.navbar-brand {
+    color: #337ab7;
+}
+
+body {
+  background-image: url(../img/notebook.png);
+  color: #4d4d4d;
+}
+
+/*TABLE CSS*/
+table a:link {
+  color: #666;
+  font-weight: bold;
+  text-decoration:none;
+}
+table a:visited {
+  color: #999999;
+  font-weight:bold;
+  text-decoration:none;
+}
+table a:active,
+table a:hover {
+  color: #bd5a35;
+  text-decoration:underline;
+}
+table {
+  font-family: Raleway, sans-serif;
+  color:#4d4d4d;
+  font-size:12px;
+  text-shadow: 1px 1px 0px #fff;
+  background:#eaebec;
+  margin:20px;
+  border:#ccc 1px solid;
+
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
+
+  -moz-box-shadow: 0 1px 2px #d1d1d1;
+  -webkit-box-shadow: 0 1px 2px #d1d1d1;
+  box-shadow: 0 1px 2px #d1d1d1;
+}
+table th {
+  padding:21px 25px 22px 25px;
+  border-top:1px solid #fafafa;
+  border-bottom:1px solid #e0e0e0;
+
+  background: #5FB3FF;
+  background: -webkit-gradient(linear, left top, left bottom, from(#5FB3FF), to(#a9ffd4));
+  background: -moz-linear-gradient(top,  #5FB3FF,  #5FB3FF);
+}
+table th:first-child {
+  text-align: left;
+  padding-left:20px;
+}
+table tr:first-child th:first-child {
+  -moz-border-radius-topleft:3px;
+  -webkit-border-top-left-radius:3px;
+  border-top-left-radius:3px;
+}
+table tr:first-child th:last-child {
+  -moz-border-radius-topright:3px;
+  -webkit-border-top-right-radius:3px;
+  border-top-right-radius:3px;
+}
+table tr {
+  text-align: center;
+  padding-left:20px;
+}
+table td:first-child {
+  text-align: left;
+  padding-left:20px;
+  border-left: 0;
+}
+table td {
+  padding:18px;
+  border-top: 1px solid #ffffff;
+  border-bottom:1px solid #e0e0e0;
+  border-left: 1px solid #e0e0e0;
+
+  background: #fafafa;
+  background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+  background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);
+}
+table tr.even td {
+  background: #f6f6f6;
+  background: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f6f6f6));
+  background: -moz-linear-gradient(top,  #f8f8f8,  #f6f6f6);
+}
+table tr:last-child td {
+  border-bottom:0;
+}
+table tr:last-child td:first-child {
+  -moz-border-radius-bottomleft:3px;
+  -webkit-border-bottom-left-radius:3px;
+  border-bottom-left-radius:3px;
+}
+table tr:last-child td:last-child {
+  -moz-border-radius-bottomright:3px;
+  -webkit-border-bottom-right-radius:3px;
+  border-bottom-right-radius:3px;
+}
+table tr:hover td {
+  background: #f2f2f2;
+  background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
+  background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);  
+}
+/*End TABLE CSS*/
+
+.nav, .navbar, .navbar-nav, .navbar-default, .navbar-right, .navbar-collapse, .collapse {
+    /*opacity : .8;*/
+    background-color: #f5fffa;
+/*    background: #5597d0;
+    background: -webkit-gradient(linear, left top, left bottom, from(#5597d0), to(#5597d0));
+    background: -moz-linear-gradient(top,  #5597d0,  #5597d0);*/
     border-radius: 0px;
+    font-family: 'Raleway', sans-serif;
+    color: #4d4d4d;
+    /*webkit-box-shadow: none;*/
+    /*height: 45px;*/
 }
 
-.navbar-default .navbar-brand {
-    color: blue;
+.my-bar {
+    font-family: 'Raleway', sans-serif;
+    color: white;
+    opacity: 1.0;
+    background-color: #f5fffa;
 }
+
+.nav {
+      margin-top: 10px;
+}
+
+#wrapper {
+  background-color: #f5fffa;
+}
+
+#footer {
+   position:fixed;
+   left:0px;
+   bottom:0px;
+   height:30px;
+   width:100%;
+   background:#999;
+}
+
+/* Responsive: if the page is over 400px wide, do the following */
+
+@media (min-width: 400px) {
+    .header{
+        font-family: 'Playball', cursive;
+        font-size: 60px;
+        color: white;
+        opacity: 1.0;
+        vertical-align: right;
+    }
+    #index-header {
+        z-index: 1;
+        width: 230px;
+        height: 120px;
+        position: absolute;
+        padding-left: 1em;
+        background-color: black;
+        opacity: 0.7;
+    }
+    #subtitle {
+        font-family: 'Raleway', sans-serif;
+        font-size: 16px;
+        font-weight: 300;
+        color: white;
+        opacity: 1.0;
+    }
+}
+
+/* Responsive: if the page is under 400px wide, do the following */
+
+@media (max-width: 400px) {
+    .header{
+        font-family: 'Playball', cursive;
+        font-size: 32px;
+        color: white;
+        opacity: 1.0;
+    }
+    #index-header {
+        z-index: 1;
+        width: 165px;
+        height: 75px;
+        position: absolute;
+        padding-left: 1em;
+        background-color: black;
+        opacity: 0.7;
+    }
+    #subtitle {
+        font-family: 'Raleway', sans-serif;
+        font-size: 12px;
+        font-weight: 300;
+        color: white;
+        opacity: 1.0;
+    }
+}
+ /*       #pencil {
+            /*background: url("../static/img/pencil2.jpg") no-repeat center center fixed; */
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            width: 100%;
+            height: auto;
+        }*/
+

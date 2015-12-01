@@ -6,21 +6,21 @@
 </script>
 <!-- <script src="/static/js/list_items.js"></script>
  -->
-<div id="list-items" data-type="{{ this_list.list_type }}">
+
+<div id="listItems" data-type="{{ this_list.list_type }}">
     <h1 id="list-items-title">{{this_list.name}}</h1>
     <div id="list_permissions">
-        Users who can edit list:
+        Users who can edit list: *
         {% for user in permissions %}
-            {{ user.user.name }},
+            {{ user.user.name }} *
         {% endfor %}
     </div>
-    {% if this_list.list_type=='shopping' %}
-            shopping <br>
-        <div id="shopping_list">
+    {% if this_list.list_type=='shopping' %}<br>
+        <div class="container2" id="shopping_list">
             <table class="center" id="listItemsTable">
                 <thead><tr>
-                    <td>ITEM</td>
-                    <td>INCOMPLETE?</td>
+                    <th>Item</th>
+                    <th>Complete?</th>
                 </tr></thead>
                 <tbody>
                    {% for item in this_list.shoppings %}
@@ -59,23 +59,22 @@
     {% endif %}
 
 
-    {% if this_list.list_type=='to-do' %}
-            to-do <br>
-        <div id="todo_list">
-            <table class="center" id="listItemsTable">
+    {% if this_list.list_type=='to-do' %}<br>
+        <div class="container2" id="todo_list">
+            <table class="center" id="listItemsTable" cellspacing='0'>
                 <thead><tr>
-                    <td>ITEM</td>
-                    <td>Due Date</td>
-                    <td>INCOMPLETE?</td>
-                    <td>LOCATION name</td>
-                    <td>ADDRESS</td>
+                    <th>Item</th>
+                    <th>Due Date</th>
+                    <th>Complete?</th>
+                    <th>Location</th>
+                    <th>Address</th>
                 </tr></thead>
                 <tbody>
                     {% for item in this_list.to_dos %}
                         <div class="todo_item">
                             <tr>
                                 <td>{{ item.item }}</td>
-                                <td>{{ item.due_date_todo }}</td>
+                                <td>{{ item.due_date_todo.strftime("%m-%d-%Y") }}</td>
                                 <td>
                                     {% if item.status_notdone==True %}
                                         <input type="button" class="doneButton" data-listtype="ToDo" name="status_done" id="{{ item.to_do_id }}">

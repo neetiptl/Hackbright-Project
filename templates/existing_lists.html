@@ -2,21 +2,36 @@
 {% block content %}
 <script src="/static/js/existing_lists.js"></script>
 
-    <div id="existing_lists">
+    <div class="existingLists">
         <h1 id="existing-lists-title">Existing Lists:</h1>
-        {% for group in user_list_groups %}
-            <a href="/lists/{{ group.checklist.list_id }}">
-            {{ group.checklist.name }} 
-            </a> Due on: {{ group.checklist.due_date_list}} Created by: {{ group.checklist.created_by }}
-                {% if group.checklist.list_location_address %}
-                    Location: {{ group.checklist.list_location_address }}
-                {% endif %}<br>
-        {% endfor %}
+        <table class="center" id="existingListTable">
+            <thead><tr>
+                    <th>List Name</th>
+                    <th>Due Date</th>
+                    <th>Location</th>
+                    <th>Address</th>
+                </tr></thead>
+            <tbody>
+                {% for group in user_list_groups %}
+                    <tr>
+                        <td><a href="/lists/{{ group.checklist.list_id }}">
+                        {{ group.checklist.name }}</a></td>
+                        <td>{{ group.checklist.due_date_list.strftime("%m-%d-%Y")}}</td>
+                        <td>{{ group.checklist.list_location_name }}</td>
+                        <td>
+                            {% if group.checklist.list_location_address %}
+                                {{ group.checklist.list_location_address }}
+                            {% endif %}</td><br>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-
-    <form action="/new_list_base" method="GET">
-        <input type="submit" value="Create New List">
-    </form>
+    <div class="existingLists">
+        <form action="/new_list_base" method="GET">
+            <input type="submit" value="Create New List">
+        </form>
+    </div>
 
 
 {% endblock %}

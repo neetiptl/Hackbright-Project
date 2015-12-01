@@ -10,9 +10,14 @@
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <link href='https://fonts.googleapis.com/css?family=Raleway:400,500,800|Playball|Yellowtail' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="/static/css/mycss.css">
-  <link href='https://fonts.googleapis.com/css?family=Raleway:400,500,800' rel='stylesheet' type='text/css'>
+
   <!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
+  <script src="/static/js/myjavascript.js"></script>
+
   <script>
   $(function() {
     $( ".datepicker" ).datepicker();
@@ -21,30 +26,49 @@
 
 </head>
 <body>
-  <!-- Static navbar -->
-  <div class="navbar">
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <div class="navbar-brand"><a href="/">Nucleus</a></div>
-                
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                  {% if "user_id" in session %}
-                      <li><a href="/existing_lists">Existing Lists</a></li>
-                      <li><a href="/account_info">{{ session["user_name"] }}'s Account Information</a></li>
-                      <li><a href="/logout">Logout</a></li>
+  <!-- <div id="wrapper"> -->
+    <!-- Static navbar -->
+    <!-- <div class="navbar" id="theBar"> -->
+      <nav class="navbar navbar-default my-bar">
+          <div class="container-fluid">
+            <!-- group links for better mobile display -->
+              <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <!-- <a class="navbar-brand" href="/"><img src="/static/img/atom.jpg">Nucleus</a> -->
+                <div class="navbar-brand"><a href="/"><img src="/static/img/atom.jpg">Nucleus</a></div>   
+              </div>
 
-                  {% else %}
+              <!-- info to toggle -->
+              <div id="navbar" class="navbar-collapse collapse">
+                {% if "user_id" in session %}
+                  <ul class="nav navbar-nav">
+                    <li><a href="/existing_lists">Existing Lists</a></li>
+                    <li><a href="/account_info">{{ session["user_name"] }}'s Account Information</a></li>
+                    <li><a href="/about">About</a></li>
+                  </ul>
+                  <ul class="nav navbar-nav, navbar-right">
+                    <li><a href="/logout">Logout</a></li>
+                  </ul>
+
+                {% else %}
+                <ul class="nav navbar-nav">
+                    <li><a href="/about">About</a></li>
+                  </ul>
+                  <ul class="nav navbar-nav navbar-right">
                       <li><a href="/login">Login</a></li>
                       <li><a href="/register">Register</a></li>
-                  {% endif %}
                 </ul>
-            </div>
-        </div>
-    </nav>
-  </div>
+                {% endif %}
+              </div> <!--navbar-collape-->
+          </div> <!--container-fluid -->
+      </nav>
+    <!-- </div> -->
+  <!-- </div> -->
 
 
 
@@ -58,7 +82,11 @@
   {% endblock %}
 </div>
 
-<script src="/static/js/myjavascript.js"></script>
-
+  {% block footer %}
+    <div class="footer">
+      <p id="copyright">Copyright © 2015 | Nucleus | All Rights Reserved</p>
+      <p><a href="https://www.linkedin.com/in/neetipatel"><i class="fa fa-linkedin"></i></a> <a href="https://github.com/neetiptl"><i class="fa fa-github"></i></a> <a href="mailto:#"><i class="fa fa-envelope"></i></a></p>
+    </div>
+  {% endblock %}
 </body>
 </html>

@@ -107,6 +107,18 @@ def account_info():
 
     return render_template("account_info.html", user_info=user_info)
 
+
+#################SHOW ABOUT PAGE#################################
+
+
+@app.route('/about')
+def show_about_page():
+    """Display About page."""
+
+    return render_template('about.html')
+
+
+
 ################ Display existing lists route ##############
 @app.route('/existing_lists')
 def existing_lists():

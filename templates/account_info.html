@@ -1,48 +1,114 @@
 {% extends 'base.html' %}
 {% block content %}
-<style>
-  #map {
-    width: 500px;
-    height: 400px;
-    background-color: #CCC;
-    position: 50%;
-  }
-</style>
-<script src="https://maps.googleapis.com/maps/api/js"></script>
+
 <script>
-function showPosition(position){
-    console.log(position);
-    var lat = position.coords.latitude;
-    var lon = position.coords.longitude;
-    console.log(lat,lon);
-    var postParams = { 'lat' : lat, 'lon' : lon};
-    console.log(postParams)
-    $.get('/show_location', postParams, function() {
-        console.log("we're back")});
-};
-
-navigator.geolocation.getCurrentPosition(showPosition);
-
-function initialize() {
-    var mapCanvas = document.getElementById('map');
-    var mapOptions = {
-      center: new google.maps.LatLng(lat, lon),
-      zoom: 8,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
+var x = document.getElementById("demo");
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
     }
-    var map = new google.maps.Map(mapCanvas, mapOptions);
 }
-google.maps.event.addDomListener(window, 'load', initialize);
+function showPosition(position) {
+    var latlon = position.coords.latitude + "," + position.coords.longitude;
+
+    var img_url = "http://maps.googleapis.com/maps/api/staticmap?center="
+    +latlon+"&zoom=14&size=400x300&sensor=false&markers=color:blue%7C" + latlon;
+    document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>";
+}
+
+function showError(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            x.innerHTML = "User denied the request for Geolocation."
+            break;
+        case error.POSITION_UNAVAILABLE:
+            x.innerHTML = "Location information is unavailable."
+            break;
+        case error.TIMEOUT:
+            x.innerHTML = "The request to get user location timed out."
+            break;
+        case error.UNKNOWN_ERROR:
+            x.innerHTML = "An unknown error occurred."
+            break;
+    }
+}
+
 </script>
 
-<div id="user_info">
-    <div>User Name: {{ user_info.name }}</div>
-    <div>Email: {{ user_info.email }}</div>
-    <div>Mobile: {{ user_info.mobile }}</div>
-    <div>Address: {{ user_info.user_location_address }}</div>
-</div>
-<div id="map"></div>
+<div class="container">
+    <div id="user_info">
+        <div>User Name: {{ user_info.name }}</div>
+        <div>Email: {{ user_info.email }}</div>
+        <div>Mobile: {{ user_info.mobile }}</div>
+        <div>Address: {{ user_info.user_location_address }}</div>
+    </div>
 
+    <p id="demo">(Click to see your position)</p>
+    <button class="btn btn-blue" onclick="getLocation()">Map</button>
+
+    <div id="mapholder"></div>
+</div>
+
+<style>
+
+.hot-container p { margin-top: 10px; }
+button { text-decoration: none; margin: 0 10px; }
+
+.hot-container {
+    min-height: 100px;
+    margin-top: 100px;
+    width: 100%;
+    text-align: center;
+}
+
+button.btn {
+    display: inline-block;
+    color: #666;
+    background-color: #eee;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 12px;
+    padding: 10px 30px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border: 1px solid rgba(0,0,0,0.3);
+    border-bottom-width: 3px;
+}
+
+    button.btn:hover {
+        background-color: #e3e3e3;
+        border-color: rgba(0,0,0,0.5);
+    }
+    
+    button.btn:active {
+        background-color: #CCC;
+        border-color: rgba(0,0,0,0.9);
+    }
+
+/* blue button */
+
+button.btn.btn-blue {
+    background-color: #337ab7;
+    border-color: rgba(0,0,0,0.3);
+    text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+    color: #FFF;
+}
+
+    button.btn.btn-blue:hover {
+        background-color: #4F87A2;
+        border-color: rgba(0,0,0,0.5);
+    }
+    
+    button.btn.btn-blue:active {
+        background-color: #3C677B;
+        border-color: rgba(0,0,0,0.9);
+    }
+
+
+</style>
 
 
 
