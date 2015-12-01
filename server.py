@@ -215,7 +215,7 @@ def get_twilio_response():
     body = request.form['Body']
     message, list_id = body.split(' ')
     print message, list_id
-    resp.sms("Hello, Mobile Monkey")
+    resp.sms("You've been added!")
     from_number = request.values.get('From', None)
     from_number = from_number.lstrip('+1')
     print "from_number", from_number
@@ -443,11 +443,11 @@ def get_location():
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension
-    app.debug = True
+    # app.debug = True
 
     connect_to_db(app)
 
     # Use the DebugToolbar
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
     app.run()
